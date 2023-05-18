@@ -1,4 +1,4 @@
-package me.CHANGEME.slimefunaddon;
+package me.CAPS123987.MEStorage;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
