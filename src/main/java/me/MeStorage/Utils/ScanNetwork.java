@@ -16,6 +16,7 @@ public interface ScanNetwork {
 	
 	List<Location> buffer = new ArrayList<Location>();
 	default void scanall(Location blockFrom,Location main) {
+		BlockStorage.addBlockInfo(main.getBlock(), "machines","");
 		scan(blockFrom,main);
 		for(Location l:buffer) {
 			BlockStorage.addBlockInfo(l,"scanned","false");

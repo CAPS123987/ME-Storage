@@ -44,6 +44,7 @@ public class MeConnector extends SlimefunItem implements ScanNetwork{
 							Location mainloc = new Location(Bukkit.getWorld(newloc[3]),Double.parseDouble(newloc[0]),Double.parseDouble(newloc[1]),Double.parseDouble(newloc[2]));
 							scanall(b.getLocation(),mainloc);
 						}
+						break;
 					}
 				}
 			}
