@@ -1,4 +1,4 @@
-package me.CAPS123987.Utils;
+package me.MeStorage.Utils;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;

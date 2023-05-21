@@ -1,22 +1,15 @@
-package me.CAPS123987.MEStorage;
+package me.MeStorage.MEStorage;
 
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
-import me.CAPS123987.Items.Items;
-import me.CAPS123987.System.DriverServer;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import me.MeStorage.Items.Items;
+import me.MeStorage.System.DriverServer;
+import me.MeStorage.System.MeConnector;
+import me.MeStorage.System.MeStorageControler;
 
 public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static MeStorage instance;
@@ -24,7 +17,6 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     public void onEnable() {
         // Read something from your config.yml
         Config cfg = new Config(this);
-        //ConfigurationSection sf = new ConfigurationSection();
         instance = this;
         if (cfg.getBoolean("options.auto-update")) {
             // You could start an Auto-Updater for example
@@ -38,6 +30,8 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new DriverServer(1,Items.SERVER1,Items.recipe_TEST_ITEM).register(this);
         new DriverServer(2,Items.SERVER2,Items.recipe_TEST_ITEM).register(this);
         new DriverServer(3,Items.SERVER3,Items.recipe_TEST_ITEM).register(this);
+        new MeStorageControler().register(this);
+        new MeConnector().register(this);
     }
 
     @Override

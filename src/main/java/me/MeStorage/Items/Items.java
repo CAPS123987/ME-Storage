@@ -1,4 +1,4 @@
-package me.CAPS123987.Items;
+package me.MeStorage.Items;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -7,8 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
-import io.github.thebusybiscuit.slimefun4.utils.LoreBuilder;
-import me.CAPS123987.MEStorage.MeStorage;
+import me.MeStorage.MEStorage.MeStorage;
 import net.md_5.bungee.api.ChatColor;
 
 public class Items {
@@ -19,6 +18,16 @@ public class Items {
 	public static final SlimefunItemStack TEST_ITEM = new SlimefunItemStack("TEST_ITEM",
 			Material.COAL_BLOCK,
 	        "TEST_ITEM",
+	        ""
+	    );
+	public static final SlimefunItemStack MESTORAGECONTROLER = new SlimefunItemStack("MESTORAGECONTROLER",
+			Material.IRON_BLOCK,
+	        "MESTORAGECONTROLER",
+	        ""
+	    );
+	public static final SlimefunItemStack MECONNECTOR = new SlimefunItemStack("MECONNECTOR",
+			Material.POLISHED_DEEPSLATE,
+	        "MECONNECTOR",
 	        ""
 	    );
 	public static final SlimefunItemStack SERVER1 = new SlimefunItemStack("SERVER1",

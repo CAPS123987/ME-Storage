@@ -1,18 +1,16 @@
-package me.CAPS123987.Utils;
+package me.MeStorage.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.CAPS123987.MEStorage.MeStorage;
+import me.MeStorage.MEStorage.MeStorage;
 
 public interface ItemUtils {
 	FileConfiguration cfg = MeStorage.instance.getConfig();
@@ -31,7 +29,8 @@ public interface ItemUtils {
 		int curentCapacity = yaml.getInt("curentCapacity")+item.getAmount();
 		
 		if(curentCapacity<=maxCapacity) {
-			for(int i = 0; max>0;max--) {
+			for(@SuppressWarnings("unused")
+			int i = 0; max>0;max--) {
 				
 				ItemStack oldItem = (ItemStack)yaml.get(String.valueOf(max));
 				
@@ -116,7 +115,6 @@ public interface ItemUtils {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
@@ -125,7 +123,6 @@ public interface ItemUtils {
 			yaml.set("curentCapacity", 0);
 			saveFile(file,yaml);
 		}
-		//saveFile(yaml);
 		
 	}
 	
@@ -156,7 +153,6 @@ public interface ItemUtils {
 		try {
 			file.save(f);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -165,7 +161,7 @@ public interface ItemUtils {
 		ItemMeta meta = item.getItemMeta();
 		List<String> lore = meta.getLore();
 		if(!meta.getLore().get(1).contains("No ID")) {return true;}
-		int capacity = Integer.parseInt(meta.getLore().get(0).replaceAll("[^0-9]", ""));;
+		int capacity = Integer.parseInt(meta.getLore().get(0).replaceAll("[^0-9]", ""));
 		int drive = cfg.getInt("drive");
 		lore.remove(1);
 		lore.add(String.valueOf(drive));
