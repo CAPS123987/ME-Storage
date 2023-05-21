@@ -13,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import me.CAPS123987.Items.Items;
 import me.CAPS123987.System.DriverServer;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -28,8 +29,15 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         if (cfg.getBoolean("options.auto-update")) {
             // You could start an Auto-Updater for example
         }
+        
+        new SlimefunItem(Items.meStorage, Items.DRIVE1, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
+        new SlimefunItem(Items.meStorage, Items.DRIVE2, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
+        new SlimefunItem(Items.meStorage, Items.DRIVE3, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
+        new SlimefunItem(Items.meStorage, Items.DRIVE4, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
 
-        new DriverServer().register(this);
+        new DriverServer(1,Items.SERVER1,Items.recipe_TEST_ITEM).register(this);
+        new DriverServer(2,Items.SERVER2,Items.recipe_TEST_ITEM).register(this);
+        new DriverServer(3,Items.SERVER3,Items.recipe_TEST_ITEM).register(this);
     }
 
     @Override
