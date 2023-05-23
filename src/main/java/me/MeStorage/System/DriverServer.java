@@ -3,9 +3,7 @@ package me.MeStorage.System;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,8 +13,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.Vector;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -29,6 +25,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
+import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.ItemUtils;
 import me.MeStorage.Utils.ScanNetwork;
@@ -236,30 +233,17 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 
 			@Override
 			public void onPlayerPlace(BlockPlaceEvent e) {
+				
+				
+				
+				
+				
 				Block b = e.getBlock();
 				BlockStorage.addBlockInfo(b, "MeType", "MeStore");
 				BlockStorage.addBlockInfo(b, "scanned", "false");
 				BlockStorage.addBlockInfo(b, "Status", "off");
 				BlockStorage.addBlockInfo(b, "Hidden", "false");
-				for(Vector v : sides) {
-					Location newBlock = b.getLocation().clone().add(v);
-					SlimefunItem sfitem =BlockStorage.check(newBlock.getBlock());
-					if(sfitem instanceof MeConnector) {
-						String loc = BlockStorage.getLocationInfo(newBlock, "main");
-						if(loc!=null) {
-							BlockStorage.addBlockInfo(b, "main", loc);
-							String[] newloc = loc.split(";");
-							Location mainloc = new Location(Bukkit.getWorld(newloc[3]),Double.parseDouble(newloc[0]),Double.parseDouble(newloc[1]),Double.parseDouble(newloc[2]));
-							scanall(b.getLocation(),mainloc);
-						}
-						break;
-						
-					}
-					if(sfitem instanceof MeStorageControler) {
-						BlockStorage.addBlockInfo(b, "main", newBlock.getX()+";"+newBlock.getY()+";"+newBlock.getZ()+";"+newBlock.getWorld().getName());
-						break;
-					}
-				}
+				findClose(b);
 			}
     		
     	};

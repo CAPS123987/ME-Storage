@@ -7,3 +7,5 @@
 .classpath
 dependency-reduced-pom.xml
 .DS_Store
+test2.bat
+test.bat

@@ -3,17 +3,21 @@ package me.MeStorage.System;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.MeStorage.Items.Items;
+import me.MeStorage.MEStorage.MeStorage;
+import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.ItemUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -36,6 +40,20 @@ EnergyNetComponent,ItemUtils{
 		super(Items.meStorage,Items.MESTORAGECONTROLER,RecipeType.ENHANCED_CRAFTING_TABLE,Items.recipe_TEST_ITEM);
 		
 		createPreset(this, this::constructMenu);
+		addItemHandler(onPlace());
+	}
+	public BlockPlaceHandler onPlace(){
+		return new BlockPlaceHandler(false) {
+
+			@Override
+			public void onPlayerPlace(BlockPlaceEvent e) {
+				MeNet newNet = new MeNet();
+				newNet.setMain(e.getBlock().getLocation());
+				MeStorage.getNet().addNetwork(newNet);
+				MeStorage.saveNets();
+			}
+			
+		};
 	}
 
 	@Override
