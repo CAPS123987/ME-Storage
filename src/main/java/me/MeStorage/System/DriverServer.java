@@ -234,16 +234,13 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 			@Override
 			public void onPlayerPlace(BlockPlaceEvent e) {
 				
-				
-				
-				
-				
 				Block b = e.getBlock();
 				BlockStorage.addBlockInfo(b, "MeType", "MeStore");
 				BlockStorage.addBlockInfo(b, "scanned", "false");
 				BlockStorage.addBlockInfo(b, "Status", "off");
 				BlockStorage.addBlockInfo(b, "Hidden", "false");
 				findClose(b);
+				
 			}
     		
     	};

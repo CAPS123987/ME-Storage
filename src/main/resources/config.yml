@@ -1,3 +1,4 @@
 options:
   auto-update: true
 drive: 1
+auto-save-delay-in-minutes: 10

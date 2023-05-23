@@ -15,6 +15,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import me.MeStorage.AutoSave.AutoSave;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.MeNet.MeNetManager;
@@ -25,6 +26,7 @@ import me.MeStorage.System.MeStorageControler;
 public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static MeStorage instance;
 	private static MeNetManager meNetManager;
+	private final AutoSave autoSave = new AutoSave();
     @Override
     public void onEnable() {
         // Read something from your config.yml
@@ -47,12 +49,12 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new MeStorageControler().register(this);
         new MeConnector().register(this);
         
-        PluginStart();
+        PluginStart(cfg);
         
     }
     
     @SuppressWarnings("unchecked")
-    private void PluginStart() {
+    private void PluginStart(Config cfg) {
     	File file = new File(MeStorage.instance.getDataFolder(),"Networks.yml");
     	
     	if(file.exists()) {
@@ -78,7 +80,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 			}
 			meNetManager = new MeNetManager(list);
 		}
-    	
+    	autoSave.start(this, cfg.getInt("auto-save-delay-in-minutes"));
     	
     	
     }

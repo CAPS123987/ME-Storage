@@ -1,8 +1,11 @@
 package me.MeStorage.System;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
@@ -20,6 +24,8 @@ import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.ItemUtils;
+import me.MeStorage.Utils.MeNetUtils;
+import me.MeStorage.Utils.ScanNetwork;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -28,7 +34,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 @SuppressWarnings("deprecation")
 public class MeStorageControler extends SimpleSlimefunItem<BlockTicker> implements ETInventoryBlock,
-EnergyNetComponent,ItemUtils{
+EnergyNetComponent,ItemUtils,MeNetUtils,ScanNetwork{
 	
 	private int[] border = {0,1,2,3,4,5,6,7,8,9,18,27,36,45};
 	private final int[] inputBorder = {};
@@ -40,7 +46,7 @@ EnergyNetComponent,ItemUtils{
 		super(Items.meStorage,Items.MESTORAGECONTROLER,RecipeType.ENHANCED_CRAFTING_TABLE,Items.recipe_TEST_ITEM);
 		
 		createPreset(this, this::constructMenu);
-		addItemHandler(onPlace());
+		addItemHandler(onPlace(),onBreak());
 	}
 	public BlockPlaceHandler onPlace(){
 		return new BlockPlaceHandler(false) {
@@ -49,8 +55,22 @@ EnergyNetComponent,ItemUtils{
 			public void onPlayerPlace(BlockPlaceEvent e) {
 				MeNet newNet = new MeNet();
 				newNet.setMain(e.getBlock().getLocation());
+				//newNet.setId(MeStorage.getNet().getNetworks().size());
 				MeStorage.getNet().addNetwork(newNet);
-				MeStorage.saveNets();
+				scanall(e.getBlock().getLocation(),e.getBlock().getLocation(),nullLoc);
+			}
+			
+		};
+	}
+	
+	public BlockBreakHandler onBreak(){
+		return new BlockBreakHandler(false, false) {
+
+			@Override
+			public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+				removeNet(e.getBlock().getLocation());
+				
+				
 			}
 			
 		};

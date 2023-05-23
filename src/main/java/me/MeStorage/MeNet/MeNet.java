@@ -2,34 +2,29 @@ package me.MeStorage.MeNet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public class MeNet implements ConfigurationSerializable{
-	Location main;
-	List<Location> connectors = new ArrayList<Location>();
-	List<Location> machines = new ArrayList<Location>();
+	protected Location main;
+	protected List<Location> connectors = new ArrayList<Location>();
+	protected List<Location> machines = new ArrayList<Location>();
+	protected int id;
+	
 	
 	public MeNet() {
 	}
 	
-	public void setMain(Location main) {
-		Validate.notNull(main,"Main can't be null");
-		this.main = main;
+	public int getId() {
+		return id;
 	}
 	
-	public void setConnectors(List<Location> list) {
-		connectors = list;
-	}
-	
-	public void setMachines(List<Location> list) {
-		machines = list;
+	public Location getMain() {
+		return main;
 	}
 	
 	public List<Location> getConnectors() {
@@ -38,6 +33,26 @@ public class MeNet implements ConfigurationSerializable{
 	
 	public List<Location> getMachines() {
 		return machines;
+	}
+	
+	public void setMain(Location main) {
+		Validate.notNull(main,"Main can't be null");
+		this.main = main;
+	}
+	
+	public void setConnectors(List<Location> list) {
+		Validate.notNull(list,"List can't be null");
+		connectors = list;
+	}
+	
+	public void setMachines(List<Location> list) {
+		Validate.notNull(list,"List can't be null");
+		machines = list;
+	}
+	
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public void removeConnector(Location l) {
@@ -62,9 +77,6 @@ public class MeNet implements ConfigurationSerializable{
 	}
 	
 	
-	public Location getMain() {
-		return main;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public static MeNet deserialize(Map<String, Object> args) {
@@ -72,17 +84,18 @@ public class MeNet implements ConfigurationSerializable{
 		meNet.setMain((Location) args.get("main"));
 		meNet.setConnectors((List<Location>) args.get("connectors"));
 		meNet.setMachines((List<Location>) args.get("machines"));
+		meNet.setId((int) args.get("id"));
 		return meNet;
     }
 
 	@Override
 	public Map<String, Object> serialize() {
-		//ConfigurationSerialization.deserializeObject(map);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("connectors", connectors);
 		map.put("machines", machines);
 		map.put("main", main);
+		map.put("id", id);
 		return map;
 	}
 	
