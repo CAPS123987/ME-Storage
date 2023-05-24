@@ -30,6 +30,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 @SuppressWarnings("deprecation")
@@ -55,9 +56,11 @@ EnergyNetComponent,ItemUtils,MeNetUtils,ScanNetwork{
 			public void onPlayerPlace(BlockPlaceEvent e) {
 				MeNet newNet = new MeNet();
 				newNet.setMain(e.getBlock().getLocation());
-				//newNet.setId(MeStorage.getNet().getNetworks().size());
+				int empty = findEmpty();
+				newNet.setId(empty);
+				BlockStorage.addBlockInfo(e.getBlock().getLocation(), "net", String.valueOf(empty));
 				MeStorage.getNet().addNetwork(newNet);
-				scanall(e.getBlock().getLocation(),e.getBlock().getLocation(),nullLoc);
+				scanall(e.getBlock().getLocation(),empty,nullLoc);
 			}
 			
 		};

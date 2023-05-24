@@ -52,8 +52,8 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 			public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
 				String loc = BlockStorage.getLocationInfo(e.getBlock().getLocation(), "main");
 				if(!(loc==null||loc=="")) {
-					Location main = stringToLoc(loc);
-					scanall(main,main,e.getBlock().getLocation());
+					try{scanall(getNetById(Integer.parseInt(loc)).getMain(),Integer.parseInt(loc),e.getBlock().getLocation());}catch(Exception e2) {};
+					
 				}
 			}
 			
@@ -67,11 +67,8 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 			public void onRightClick(PlayerRightClickEvent e) {
 				Block b = e.getClickedBlock().get();
 				String main = BlockStorage.getLocationInfo(b.getLocation(), "main");
-				if(main == null||main=="") {
-					e.getPlayer().sendMessage(ChatColor.RED+"not Connected");
-				}else {
-					e.getPlayer().sendMessage(ChatColor.GREEN+"connected");
-				}
+				try {Integer.parseInt(main);e.getPlayer().sendMessage(ChatColor.GREEN+"connected");}
+				catch(Exception e2) {e.getPlayer().sendMessage(ChatColor.RED+"not Connected");}
 				
 			}
 			

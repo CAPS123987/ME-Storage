@@ -225,6 +225,11 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), slots);
                 }
+                
+                String loc = BlockStorage.getLocationInfo(e.getBlock().getLocation(), "main");
+				if(!(loc==null||loc=="")) {
+					try{scanall(getNetById(Integer.parseInt(loc)).getMain(),Integer.parseInt(loc),e.getBlock().getLocation());}catch(Exception e2) {};
+				}
             }
         };
     }

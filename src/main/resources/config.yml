@@ -2,3 +2,4 @@ options:
   auto-update: true
 drive: 1
 auto-save-delay-in-minutes: 10
+max-net-size: 4000

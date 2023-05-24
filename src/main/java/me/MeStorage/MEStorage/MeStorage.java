@@ -27,6 +27,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static MeStorage instance;
 	private static MeNetManager meNetManager;
 	private final AutoSave autoSave = new AutoSave();
+	private static int maxSize;
     @Override
     public void onEnable() {
         // Read something from your config.yml
@@ -35,7 +36,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         if (cfg.getBoolean("options.auto-update")) {
             // You could start an Auto-Updater for example
         }
-        
+        maxSize = cfg.getInt("max-net-size");
         ConfigurationSerialization.registerClass(MeNet.class);
         
         new SlimefunItem(Items.meStorage, Items.DRIVE1, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
@@ -83,6 +84,9 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	autoSave.start(this, cfg.getInt("auto-save-delay-in-minutes"));
     	
     	
+    }
+    public static int getMaxSize() {
+    	return maxSize;
     }
     
     public static MeNetManager getNet() {

@@ -15,6 +15,31 @@ public interface MeNetUtils {
 		}
 		return null;
 	}
+	default MeNet getNetById(int id) {
+		for(MeNet net : MeStorage.getNet().getNetworks()) {
+			if(net.getId()==id) {
+				return net;
+			}
+		}
+		return null;
+	}
+	default int findEmpty() {
+		int id = 0;
+		while(testId(id)) {
+			id++;
+		}
+		return id;
+	}
+	
+	public static boolean testId(int id) {
+		for(MeNet net : MeStorage.getNet().getNetworks()) {
+			if(net.getId()==id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	default void removeNet(Location main) {
 		MeNet toremove = getNetByMain(main);
 		
