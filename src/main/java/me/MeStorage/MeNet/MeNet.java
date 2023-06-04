@@ -13,6 +13,7 @@ public class MeNet implements ConfigurationSerializable{
 	protected Location main;
 	protected List<Location> connectors = new ArrayList<Location>();
 	protected List<Location> machines = new ArrayList<Location>();
+	protected List<Location> servers = new ArrayList<Location>();
 	protected int id;
 	
 	
@@ -29,6 +30,10 @@ public class MeNet implements ConfigurationSerializable{
 	
 	public List<Location> getConnectors() {
 		return connectors;
+	}
+	
+	public List<Location> getServers() {
+		return servers;
 	}
 	
 	public List<Location> getMachines() {
@@ -50,6 +55,11 @@ public class MeNet implements ConfigurationSerializable{
 		machines = list;
 	}
 	
+	public void setServers(List<Location> list) {
+		Validate.notNull(list,"List can't be null");
+		servers = list;
+		
+	}
 	
 	public void setId(int id) {
 		this.id = id;
@@ -75,6 +85,11 @@ public class MeNet implements ConfigurationSerializable{
 		machines.add(l);
 		
 	}
+	public void addServer(Location l) {
+		Validate.notNull(l,"Location can't be null");
+		servers.add(l);
+	}
+	
 	
 	
 	
@@ -85,6 +100,7 @@ public class MeNet implements ConfigurationSerializable{
 		meNet.setConnectors((List<Location>) args.get("connectors"));
 		meNet.setMachines((List<Location>) args.get("machines"));
 		meNet.setId((int) args.get("id"));
+		meNet.setServers((List<Location>) args.get("servers"));
 		return meNet;
     }
 
@@ -93,6 +109,7 @@ public class MeNet implements ConfigurationSerializable{
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("connectors", connectors);
+		map.put("servers", servers);
 		map.put("machines", machines);
 		map.put("main", main);
 		map.put("id", id);

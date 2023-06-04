@@ -46,27 +46,27 @@ public class Items {
 	        
 	        ""
 	    );
-	public static final SlimefunItemStack DRIVE1 = new SlimefunItemStack("DRIVE1",
+	public static final SlimefunItemStack DISK1 = new SlimefunItemStack("DISK1",
 			Material.LEATHER_HELMET,
-	        "DRIVE1",
+	        "DISK1",
 	        ChatColor.RESET+"Capacity: 128",
 	        ChatColor.RED+"No ID"
 	    );
-	public static final SlimefunItemStack DRIVE2 = new SlimefunItemStack("DRIVE2",
+	public static final SlimefunItemStack DISK2 = new SlimefunItemStack("DISK2",
 			Material.CHAINMAIL_HELMET,
-	        "DRIVE2",
+	        "DISK2",
 	        ChatColor.RESET+"Capacity: 1 024",
 	        ChatColor.RED+"No ID"
 	    );
-	public static final SlimefunItemStack DRIVE3 = new SlimefunItemStack("DRIVE3",
+	public static final SlimefunItemStack DISK3 = new SlimefunItemStack("DISK3",
 			Material.IRON_HELMET,
-	        "DRIVE3",
+	        "DISK3",
 	        ChatColor.RESET+"Capacity: 8 192",
 	        ChatColor.RED+"No ID"
 	    );
-	public static final SlimefunItemStack DRIVE4 = new SlimefunItemStack("DRIVE4",
+	public static final SlimefunItemStack DISK4 = new SlimefunItemStack("DISK4",
 			Material.DIAMOND_HELMET,
-	        "DRIVE4",
+	        "DISK4",
 	        ChatColor.RESET+"Capacity: 65 536",
 	        ChatColor.RED+"No ID"
 	    );

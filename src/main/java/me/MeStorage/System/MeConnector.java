@@ -17,6 +17,7 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
+import me.MeStorage.MeDisk.MeDisk;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.MeNetUtils;
 import me.MeStorage.Utils.ScanNetwork;
@@ -32,7 +33,7 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 	}
 	public BlockPlaceHandler onPlace(){
 		return new BlockPlaceHandler(false) {
-
+			
 			@Override
 			public void onPlayerPlace(BlockPlaceEvent e) {
 
@@ -41,6 +42,11 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 				BlockStorage.addBlockInfo(b, "MeType", "Connector");
 				findClose(b);
 				
+				int disk = 1;
+				for(int i = 1;MeStorage.getDisk().getDisks().containsKey(i);i++) {
+					disk++;
+				}
+				MeStorage.getDisk().addDisk(disk, new MeDisk());
 				
 			}
 		};

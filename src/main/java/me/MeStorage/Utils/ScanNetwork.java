@@ -24,31 +24,55 @@ public interface ScanNetwork extends MeNetUtils{
 		List<Location> buffer = new ArrayList<Location>();
 		List<Location> connectors = new ArrayList<Location>();
 		List<Location> machines = new ArrayList<Location>();
-		scan(blockFrom,Net,buffer,connectors,machines,isntHere,0);
+		List<Location> servers = new ArrayList<Location>();
+		scan(blockFrom,Net,buffer,connectors,machines,isntHere,0,servers);
 		for(Location l:buffer) {
 			BlockStorage.addBlockInfo(l,"scanned","false");
 		}
+		for(Location l:connectors) {
+			BlockStorage.addBlockInfo(l,"main",String.valueOf(Net));
+		}
+		for(Location l:machines) {
+			BlockStorage.addBlockInfo(l,"main",String.valueOf(Net));
+		}
+		for(Location l:servers) {
+			BlockStorage.addBlockInfo(l,"main",String.valueOf(Net));
+		}
+		
+		
 		buffer.clear();
+		
 		MeNet net = getNetById(Net);
+		
 		List<Location> old_connectors = net.getConnectors();
-		List<Location> old_machines = net.getMachines();
+		List<Location> old_servers = net.getServers();
+		
 		net.setConnectors(connectors);
 		net.setMachines(machines);
+		net.setServers(servers);
+		
+		old_servers.removeAll(servers);
 		old_connectors.removeAll(connectors);
-		old_machines.removeAll(machines);
+		
 		for(Location l:old_connectors) {
 			BlockStorage.addBlockInfo(l, "main", null);
 		}
-		for(Location l:old_machines) {
+		
+		for(Location l:old_servers) {
 			BlockStorage.addBlockInfo(l, "main", null);
 		}
+		
+		for(Location l:old_servers) {
+			BlockStorage.addBlockInfo(l, "main", null);
+		}
+		
 		MeStorage.saveNets();
 		
 	}
 	
 	
 	
-	default void scan(Location blockFrom,int main,List<Location> buffer,List<Location> connectors,List<Location> machines,Location isntHere,int size) {
+	default void scan(Location blockFrom,int main,List<Location> buffer,List<Location> connectors,List<Location> machines,Location isntHere,int size,List<Location> servers) {
 		if(size>MeStorage.getMaxSize())return;
 		for(Vector v:sides) {
 			Location newLoc = blockFrom.clone().add(v);
@@ -75,13 +99,20 @@ public interface ScanNetwork extends MeNetUtils{
 						}
 						if(BlockStorage.getLocationInfo(newLoc, "scanned").equals("false")&&can) {
 							if(type.equals("Connector")){
-								BlockStorage.addBlockInfo(newLoc,"main", String.valueOf(main));
+								//BlockStorage.addBlockInfo(newLoc,"main", String.valueOf(main));
 								BlockStorage.addBlockInfo(newLoc,"scanned","true");
+								
 								connectors.add(newLoc);
-								scan(newLoc,main,buffer,connectors,machines,isntHere,size+1);
+								buffer.add(newLoc);
+								scan(newLoc,main,buffer,connectors,machines,isntHere,size+1,servers);
+							}else if(type.equals("MeStore")){
+								BlockStorage.addBlockInfo(newLoc,"scanned","true");
+								//BlockStorage.addBlockInfo(newLoc,"main",String.valueOf(main));
+								servers.add(newLoc);
+								buffer.add(newLoc);
 							}else {
 								BlockStorage.addBlockInfo(newLoc,"scanned","true");
-								BlockStorage.addBlockInfo(newLoc,"main",String.valueOf(main));
+								//BlockStorage.addBlockInfo(newLoc,"main",String.valueOf(main));
 								machines.add(newLoc);
 								buffer.add(newLoc);
 							}
@@ -100,33 +131,27 @@ public interface ScanNetwork extends MeNetUtils{
 			if(sfitem instanceof MeConnector) {
 				String loc = BlockStorage.getLocationInfo(newBlock, "main");
 				if(!(loc==null||loc=="")) {
-					BlockStorage.addBlockInfo(b, "main", loc);
-					loc = BlockStorage.getLocationInfo(newBlock, "main");
-						for(MeNet net : MeStorage.getNet().getNetworks()) {
-							if(net.getId()==Integer.parseInt(loc)) {
-								net.addConnector(b.getLocation());
-								scanall(net.getMain(),net.getId(),nullLoc);
-								break;
-							}
-						}
+					BlockStorage.addBlockInfo(b.getLocation(), "main", loc);
+					MeNet net = getNetById(Integer.parseInt(loc));
+
+					scanall(net.getMain(),net.getId(),nullLoc);
+					
 					break;
 				}
 			}
 			if(sfitem instanceof MeStorageControler) {
 				
 				String loc = BlockStorage.getLocationInfo(newBlock, "net");
-				BlockStorage.addBlockInfo(b, "main", loc);
-				for(MeNet net : MeStorage.getNet().getNetworks()) {
-					if(net.getId()==Integer.parseInt(loc)) {
-						net.addConnector(b.getLocation());
-						scanall(newBlock,net.getId(),nullLoc);
-						break;
-					}
-				}
+				
+				BlockStorage.addBlockInfo(b.getLocation(), "main", loc);
+				MeNet net = getNetById(Integer.parseInt(loc));
+
+				scanall(newBlock,net.getId(),nullLoc);
 				break;
 			}
 		}
 	}
+	
 	default Location stringToLoc(String s) {
 		String[] newloc = s.split(";");
 		return new Location(Bukkit.getWorld(newloc[3]),Double.parseDouble(newloc[0]),Double.parseDouble(newloc[1]),Double.parseDouble(newloc[2]));

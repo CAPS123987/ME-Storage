@@ -1,8 +1,10 @@
 package me.MeStorage.System;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,7 +29,6 @@ import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
-import me.MeStorage.Utils.ItemUtils;
 import me.MeStorage.Utils.ScanNetwork;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
@@ -39,13 +40,13 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 
 @SuppressWarnings("deprecation")
-public class DriverServer extends SimpleSlimefunItem<BlockTicker> implements ETInventoryBlock,
-EnergyNetComponent,ItemUtils,ScanNetwork {
+public class DiskServer extends SlimefunItem implements ETInventoryBlock,
+EnergyNetComponent,ScanNetwork {
 	FileConfiguration cfg = MeStorage.instance.getConfig();
 	
 	
 	private static int[] border = {0,1,2,3,4,5,6,7,8};
-	public static int[] slots = {};
+	private static int[] slots = {};
 	private static final int[] inputBorder = {};
     private static final int[] outputBorder = {};
     public static final int status = 4;
@@ -54,7 +55,7 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
     private static final int[] input = {};
     private static final int[] output = {};
     
-	public DriverServer(int stage,SlimefunItemStack item,ItemStack[] stack){
+	public DiskServer(int stage,SlimefunItemStack item,ItemStack[] stack){
 		
 		super(
 				Items.meStorage
@@ -64,12 +65,16 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 		
 		border = border(stage);
 		slots = slots(stage);
-		createPreset(this, this::constructMenu);
+		createPreset(this, this::constructMenu,this::newInstance);
 		addItemHandler(onBreak(),onPlace());
 		
 		
 	}
-	public void updateStatus(BlockMenu menu,Block b) {
+	
+	public void newInstance(BlockMenu menu,Block b) {
+		addHandlers(menu,b);
+	}
+	public void updateStatus(BlockMenu menu,Block b,int tier) {
 		
 		String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
 		
@@ -79,9 +84,11 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 			List<String> lore = new ArrayList<String>();
 			String drives = "";
 			String store = "";
-			for(int i:slots) {
+			for(int i:slots(tier)) {
 				if(menu.getItemInSlot(i)!=null) {
 					String id = menu.getItemInSlot(i).getItemMeta().getLore().get(1);
+					
+					//saveItem(Integer.parseInt(id),new ItemStack(Material.BEDROCK));
 					drives = drives+"Drive no. "+id+", ";
 					store = store + id+",";
 				}
@@ -91,95 +98,65 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 			meta.setLore(lore);
 			meta.setDisplayName(ChatColor.GREEN+"Status: Server on");
 			item.setItemMeta(meta);
-			menu.replaceExistingItem(DriverServer.status, item);
+			menu.replaceExistingItem(DiskServer.status, item);
 		}else {
 			BlockStorage.addBlockInfo(b, "Drives", "");
 			ItemStack item = new ItemStack(Material.RED_WOOL);
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.RED+"Status: Server off");
 			item.setItemMeta(meta);
-			menu.replaceExistingItem(DriverServer.status, item);
+			menu.replaceExistingItem(DiskServer.status, item);
 			
 		}
 		
 	}
 	
-	public BlockTicker getItemHandler() {
-        return new BlockTicker() {
-
-			@Override
-			public boolean isSynchronized() {
-				return true;
-			}
-
-			@Override
-			public void tick(Block b, SlimefunItem item, Config data) {
-				BlockMenu menu = BlockStorage.getInventory(b);
-				menu.addPlayerInventoryClickHandler((p, s, i, a) -> {
-		        	
-		        	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
-		        	SlimefunItem sfItem = isSlimefun(i);
-		        	if(sfItem!=null && (sfItem.isItem(Items.DRIVE1)||sfItem.isItem(Items.DRIVE2)||sfItem.isItem(Items.DRIVE3)||sfItem.isItem(Items.DRIVE4))) {
-		        			setdiscId(i);
-		        			return true;
-		        		
-		        	}
-		        	if(sfItem2!=null && (sfItem2.isItem(Items.DRIVE1)||sfItem2.isItem(Items.DRIVE2)||sfItem2.isItem(Items.DRIVE3)||sfItem2.isItem(Items.DRIVE4))) {
-		        			setdiscId(p.getItemOnCursor());
-		        			return true;
-		        		
-		        	}
-		        	
-		        	return false;
-		        	});
-				menu.addMenuOpeningHandler((p)->{
-					String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
-					String hidden = BlockStorage.getLocationInfo(b.getLocation(),"Hidden");
-					if(hidden.equals("true")) {
-						menu.replaceExistingItem(statusHidden, new CustomItemStack(new ItemStack(Material.REDSTONE),ChatColor.GOLD+ "Hide/show (Hidden)"));
-					}
-					if(status.equals("on")) {
-						for (int i1 : slots) {
-				            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
-				            	return false;
-				            });
-						}
-					}
-					updateStatus(menu,b);
-				});
-				menu.addMenuClickHandler(statusUpdate, (p, s, i, a)->{
-					String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
-					
-					if(status.equals("on")) {
-						BlockStorage.addBlockInfo(b, "Status", "off");
-						defaultSlots(menu);
-					}else {
-						BlockStorage.addBlockInfo(b, "Status", "on");
-						for (int i1 : slots) {
-				            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
-				            	return false;
-				            });
-						}
-					}
-					updateStatus(menu,b);
-		        	return false;
-		        });
-				menu.addMenuClickHandler(statusHidden, (p, s, i, a)->{
-					String status = BlockStorage.getLocationInfo(b.getLocation(),"Hidden");
-					
-					if(status.equals("false")) {
-						menu.replaceExistingItem(statusHidden, new CustomItemStack(new ItemStack(Material.REDSTONE),ChatColor.GOLD+ "Hide/show (Hidden)"));
-						BlockStorage.addBlockInfo(b, "Hidden", "true");
-					}else {
-						menu.replaceExistingItem(statusHidden, new CustomItemStack(new ItemStack(Material.GUNPOWDER),ChatColor.GOLD+ "Hide/show"));
-						BlockStorage.addBlockInfo(b, "Hidden", "false");
-					}
-		        	return false;
-		        });
-				
-			}
+	public void addHandlers(BlockMenu menu,Block b) {
+		menu.addPlayerInventoryClickHandler((p, s, i, a) -> {
         	
-        };
+        	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
+        	SlimefunItem sfItem = isSlimefun(i);
+        	if(sfItem!=null && (sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4))) {
+        		//TODO setdiskId(i);
+        			return true;
+        		
+        	}
+        	if(sfItem2!=null && (sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4))) {
+        		//TODO setdiskId(p.getItemOnCursor());
+        			return true;
+        		
+        	}
+        	
+        	return false;
+        	});
+		menu.addMenuOpeningHandler((p)->{
+			String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
+			if(status.equals("on")) {
+				for (int i1 : slots) {
+		            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
+		            	return false;
+		            });
+				}
+			}
+			updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
+		});
+		menu.addMenuClickHandler(statusUpdate, (p, s, i, a)->{
+			String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
+			
+			if(status.equals("on")) {
+				BlockStorage.addBlockInfo(b, "Status", "off");
+				defaultSlots(menu);
+			}else {
+				BlockStorage.addBlockInfo(b, "Status", "on");
+				for (int i1 : slots) {
+		            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
+		            	return false;
+		            });
+				}
+			}
+			updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
+        	return false;
+        });
 	}
 	
 
@@ -188,6 +165,7 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 	public EnergyNetComponentType getEnergyComponentType() {
 		return EnergyNetComponentType.CONSUMER;
 	}
+	
 
 	@Override
 	public int getCapacity() {
@@ -223,13 +201,15 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
                 BlockMenu inv = BlockStorage.getInventory(b);
 
                 if (inv != null) {
-                    inv.dropItems(b.getLocation(), slots);
+                    inv.dropItems(b.getLocation(), slots(getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id"))));
                 }
+                try {
+                	MeNet net = getNetById(Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "main").replaceAll("[^0-9]", "")));
+                	
+                	scanall(net.getMain(),net.getId(),b.getLocation());
+                }catch(Exception er) {}
                 
-                String loc = BlockStorage.getLocationInfo(e.getBlock().getLocation(), "main");
-				if(!(loc==null||loc=="")) {
-					try{scanall(getNetById(Integer.parseInt(loc)).getMain(),Integer.parseInt(loc),e.getBlock().getLocation());}catch(Exception e2) {};
-				}
+                BlockStorage.clearBlockInfo(b);
             }
         };
     }
@@ -240,11 +220,12 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
 			public void onPlayerPlace(BlockPlaceEvent e) {
 				
 				Block b = e.getBlock();
+				BlockStorage.addBlockInfo(b, "Drives", "");
 				BlockStorage.addBlockInfo(b, "MeType", "MeStore");
 				BlockStorage.addBlockInfo(b, "scanned", "false");
 				BlockStorage.addBlockInfo(b, "Status", "off");
-				BlockStorage.addBlockInfo(b, "Hidden", "false");
 				findClose(b);
+				addHandlers(BlockStorage.getInventory(b),b);
 				
 			}
     		
@@ -256,14 +237,14 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
             	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
 	        	SlimefunItem sfItem = isSlimefun(i);
 	        	if(sfItem!=null) {
-	        		if(sfItem.isItem(Items.DRIVE1)||sfItem.isItem(Items.DRIVE2)||sfItem.isItem(Items.DRIVE3)||sfItem.isItem(Items.DRIVE4)) {
-	        			setdiscId(i);
+	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)) {
+	        			//TODO setdiskId(i);
 	        			return true;
 	        		}
 	        	}
 	        	if(sfItem2!=null) {
-	        		if(sfItem2.isItem(Items.DRIVE1)||sfItem2.isItem(Items.DRIVE2)||sfItem2.isItem(Items.DRIVE3)||sfItem2.isItem(Items.DRIVE4)) {
-	        			setdiscId(p.getItemOnCursor());
+	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)) {
+	        			//TODO setdiskId(p.getItemOnCursor());
 	        			return true;
 	        		}
 	        	}
@@ -291,8 +272,6 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
         preset.addItem(statusUpdate, new CustomItemStack(new ItemStack(Material.ORANGE_WOOL),ChatColor.GOLD+ "Turn on/off"),
                 ChestMenuUtils.getEmptyClickHandler());
         
-        preset.addItem(statusHidden, new CustomItemStack(new ItemStack(Material.GUNPOWDER),ChatColor.GOLD+ "Hide/show"),
-                ChestMenuUtils.getEmptyClickHandler());
         
         
         for (int i1 : slots) {
@@ -300,14 +279,14 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
             	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
 	        	SlimefunItem sfItem = isSlimefun(i);
 	        	if(sfItem!=null) {
-	        		if(sfItem.isItem(Items.DRIVE1)||sfItem.isItem(Items.DRIVE2)||sfItem.isItem(Items.DRIVE3)||sfItem.isItem(Items.DRIVE4)) {
-	        			setdiscId(i);
+	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)) {
+	        			//TODO setdiskId(i);
 	        			return true;
 	        		}
 	        	}
 	        	if(sfItem2!=null) {
-	        		if(sfItem2.isItem(Items.DRIVE1)||sfItem2.isItem(Items.DRIVE2)||sfItem2.isItem(Items.DRIVE3)||sfItem2.isItem(Items.DRIVE4)) {
-	        			setdiscId(p.getItemOnCursor());
+	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)) {
+	        			//TODO setdiskId(p.getItemOnCursor());
 	        			return true;
 	        		}
 	        	}
@@ -361,9 +340,21 @@ EnergyNetComponent,ItemUtils,ScanNetwork {
     	case 3:
     		int[] i2 = {10,12,14,16,18,20,22,24,26,28,30,32,34};
         	return i2;
-    	default:
+		default:
     		int[] i3 = {10,12,14,16};
     		return i3;
+    	}
+    }
+    public int getSlotTier(String s) {
+    	switch(s) {
+    	case "SERVER1":
+    		return 1;
+    	case "SERVER2":
+    		return 2;
+    	case "SERVER3":
+    		return 3;
+    	default:
+    		return 1;
     	}
     }
 	
