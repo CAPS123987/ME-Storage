@@ -2,7 +2,6 @@ package me.MeStorage.MEStorage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import me.MeStorage.MeNet.MeNetManager;
 import me.MeStorage.System.DiskServer;
 import me.MeStorage.System.MeConnector;
 import me.MeStorage.System.MeStorageControler;
+import me.MeStorage.temp.tempMachine;
 
 public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static MeStorage instance;
@@ -36,11 +36,22 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	private static MeDiskManager meDiskManager;
 	private final AutoSave autoSave = new AutoSave();
 	private static int maxSize;
+	
+	public static int sizeDisk1;
+	public static int sizeDisk2;
+	public static int sizeDisk3;
+	public static int sizeDisk4;
     @Override
     public void onEnable() {
         // Read something from your config.yml
         Config cfg = new Config(this);
         instance = this;
+        
+        sizeDisk1 = cfg.getInt("Disk1Size");
+        sizeDisk2 = cfg.getInt("Disk2Size");
+        sizeDisk3 = cfg.getInt("Disk3Size");
+        sizeDisk4 = cfg.getInt("Disk4Size");
+        
         if (cfg.getBoolean("options.auto-update")) {
             // You could start an Auto-Updater for example
         }
@@ -58,7 +69,8 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new DiskServer(3,Items.SERVER3,Items.recipe_TEST_ITEM).register(this);
         new MeStorageControler().register(this);
         new MeConnector().register(this);
-        
+        new tempMachine().register(this);
+       
         PluginStart(cfg);
         
     }
@@ -102,8 +114,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 		}
     }
     
-    @SuppressWarnings("unchecked")
-	private void loadDisk(Config cfg) {
+    private void loadDisk(Config cfg) {
     	File file = new File(MeStorage.instance.getDataFolder(),"Disk.yml");
     	
     	if(file.exists()) {

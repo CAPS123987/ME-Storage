@@ -1,7 +1,6 @@
 package me.MeStorage.System;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -22,18 +21,16 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
+import me.MeStorage.MeDisk.MeDiskManager;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.ScanNetwork;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
@@ -117,16 +114,34 @@ EnergyNetComponent,ScanNetwork {
         	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
         	SlimefunItem sfItem = isSlimefun(i);
         	if(sfItem!=null && (sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4))) {
-        		//TODO setdiskId(i);
-        			return true;
+        			
+        		
+        		
+       			ItemMeta meta = i.getItemMeta();
+       			List<String> lore = meta.getLore();
+       			if(lore.get(1).contains("ID")) {
+       				int id = MeStorage.getDisk().createDisc(sfItem);
+	       			lore.set(1, String.valueOf(id));
+	       			meta.setLore(lore);
+	        		i.setItemMeta(meta);
+				}
+        		return true;
         		
         	}
         	if(sfItem2!=null && (sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4))) {
-        		//TODO setdiskId(p.getItemOnCursor());
+        			
+        			ItemMeta meta = p.getItemOnCursor().getItemMeta();
+        			List<String> lore = meta.getLore();
+        			if(lore.get(1).contains("ID")) {
+        				int id = MeStorage.getDisk().createDisc(sfItem2);
+	        			lore.set(1, String.valueOf(id));
+	        			meta.setLore(lore);
+	        			p.getItemOnCursor().setItemMeta(meta);
+        			}
         			return true;
         		
         	}
-        	
+        	Bukkit.broadcastMessage("false");
         	return false;
         	});
 		menu.addMenuOpeningHandler((p)->{

@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
+
+import me.MeStorage.MEStorage.MeStorage;
 
 public class MeDisk implements ConfigurationSerializable{
 	
@@ -27,6 +31,8 @@ public class MeDisk implements ConfigurationSerializable{
 	public int getCurent() {
 		return currentCapacity;
 	}
+	
+	
 	public void setItems(List<ItemStack> items) {
 		this.items = items;
 	}
@@ -35,6 +41,50 @@ public class MeDisk implements ConfigurationSerializable{
 	}
 	public void setCurent(int curent) {
 		this.currentCapacity = curent;
+	}
+	public int getSpace() {
+		return capacity-currentCapacity;
+	}
+	
+	
+	public boolean pushItem(ItemStack item) {
+		if(item.getAmount()>getSpace()) {
+			return false;
+		}
+		if(item.getType()==Material.AIR) {
+			return false;
+		}
+		if(item.getAmount()<=0) {
+			return false;
+		}
+		
+		for(ItemStack i:items) {
+			if(i.isSimilar(item)) {
+				int iAmount = i.getAmount();
+				int maxSize = i.getMaxStackSize();
+				
+				if(iAmount!=maxSize) {
+					
+					if(iAmount+item.getAmount()>maxSize) {
+							
+							int space = maxSize - iAmount;
+							item.setAmount(item.getAmount()-space);
+							i.setAmount(maxSize);
+						}else {
+							
+							i.setAmount(iAmount+item.getAmount());
+							item.setAmount(0);
+							break;
+						}
+					}
+				}
+			}
+		
+		if(item.getAmount()>0&&item.getType()!=Material.AIR) {
+			items.add(item);
+		}
+		MeStorage.saveDisks();
+		return true;
 	}
 	
 	

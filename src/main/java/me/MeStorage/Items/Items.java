@@ -49,25 +49,25 @@ public class Items {
 	public static final SlimefunItemStack DISK1 = new SlimefunItemStack("DISK1",
 			Material.LEATHER_HELMET,
 	        "DISK1",
-	        ChatColor.RESET+"Capacity: 128",
+	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk1,
 	        ChatColor.RED+"No ID"
 	    );
 	public static final SlimefunItemStack DISK2 = new SlimefunItemStack("DISK2",
 			Material.CHAINMAIL_HELMET,
 	        "DISK2",
-	        ChatColor.RESET+"Capacity: 1 024",
+	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk2,
 	        ChatColor.RED+"No ID"
 	    );
 	public static final SlimefunItemStack DISK3 = new SlimefunItemStack("DISK3",
 			Material.IRON_HELMET,
 	        "DISK3",
-	        ChatColor.RESET+"Capacity: 8 192",
+	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk3,
 	        ChatColor.RED+"No ID"
 	    );
 	public static final SlimefunItemStack DISK4 = new SlimefunItemStack("DISK4",
 			Material.DIAMOND_HELMET,
 	        "DISK4",
-	        ChatColor.RESET+"Capacity: 65 536",
+	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk4,
 	        ChatColor.RED+"No ID"
 	    );
 	public static final ItemStack[] recipe_TEST_ITEM= {

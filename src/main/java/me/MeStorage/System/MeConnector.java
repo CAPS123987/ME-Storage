@@ -2,8 +2,6 @@ package me.MeStorage.System;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -18,7 +16,6 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockUseHandler;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.MeDisk.MeDisk;
-import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.MeNetUtils;
 import me.MeStorage.Utils.ScanNetwork;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -41,12 +38,7 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 				BlockStorage.addBlockInfo(b, "scanned", "false");
 				BlockStorage.addBlockInfo(b, "MeType", "Connector");
 				findClose(b);
-				
-				int disk = 1;
-				for(int i = 1;MeStorage.getDisk().getDisks().containsKey(i);i++) {
-					disk++;
-				}
-				MeStorage.getDisk().addDisk(disk, new MeDisk());
+
 				
 			}
 		};
