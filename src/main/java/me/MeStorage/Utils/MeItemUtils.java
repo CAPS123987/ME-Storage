@@ -1,6 +1,11 @@
 package me.MeStorage.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +27,8 @@ public class MeItemUtils {
     private static final ItemStack NEXT_BUTTON_INACTIVE = new SlimefunItemStack("_UI_NEXT_INACTIVE", Material.BLACK_STAINED_GLASS_PANE, "&8Next Page \u21E8");
     public static final String SERVER_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTM4YjA1ZTUwZWYxYzhjMDJjZTMwZDhkMDliODQ2ZTdlOTE0NWFjNDExNzE1N2Y2NTMwYjRkOGUxZTMyOTg1NCJ9fX0=";
     	//https://minecraft-heads.com/custom-heads/decoration/51890-server
-    		
+    public static final String DISK_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y2YzA0NGZmNjA2NmQ0OWZhOTEyYzExZGFiOTU1ZWU1OWZlM2JlN2RjNjM2NjM1MmRkMTBiMDVkM2NlZjU0MSJ9fX0=";
+    	//https://minecraft-heads.com/custom-heads/miscellaneous/60402-google-drive
     public static ItemStack getNextButton(int page, int pages) {
         if (pages == 1 || page == pages) {
             return new CustomItemStack(NEXT_BUTTON_INACTIVE, meta -> {
@@ -63,9 +69,4 @@ public class MeItemUtils {
 		return 0;
 	}
 	
-	public static boolean isSim(ItemStack item,ItemStack item2) {
-		
-		Material comparisonType = (item.getType().isLegacy()) ? Bukkit.getUnsafe().fromLegacy(item.getData(), true) : item.getType(); // This may be called from legacy item stacks, try to get the right material
-        return comparisonType == item2.getType() && item.getDurability() == item2.getDurability() && item.hasItemMeta() == item2.hasItemMeta() && (item.hasItemMeta() ? Bukkit.getItemFactory().equals(item.getItemMeta(), item2.getItemMeta()) : true);
-	}
 }

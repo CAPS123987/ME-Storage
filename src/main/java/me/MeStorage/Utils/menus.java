@@ -3,6 +3,8 @@ package me.MeStorage.Utils;
 public enum menus {
 	MAIN("Main"),
 	
+	DRIVES("Drives"),
+	
 	SERVERS("Servers");
 
 	public String type;

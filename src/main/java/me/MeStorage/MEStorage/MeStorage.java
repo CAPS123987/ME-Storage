@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -90,10 +91,11 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	File file = new File(MeStorage.instance.getDataFolder(),"Networks.yml");
     	
     	if(file.exists()) {
-			
 			FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
 			List<MeNet> list = (List<MeNet>) yaml.get("networks");
+			ConfigurationSection tempp = yaml.getConfigurationSection("");
 			meNetManager = new MeNetManager(list);
+			
 			
 		}else {
 			try {
@@ -176,6 +178,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     
     private void onStop() {
     	saveNets();
+    	saveDisks();
     }
     public static boolean saveNets() {
     	try {

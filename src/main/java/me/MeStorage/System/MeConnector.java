@@ -2,6 +2,7 @@ package me.MeStorage.System;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -38,6 +39,7 @@ public class MeConnector extends SlimefunItem implements ScanNetwork, MeNetUtils
 				BlockStorage.addBlockInfo(b, "scanned", "false");
 				BlockStorage.addBlockInfo(b, "MeType", "Connector");
 				findClose(b);
+				//MeStorage.getDisk().getDisks().get(1).addItem2(new ItemStack(Material.BEDROCK));
 
 				
 			}
