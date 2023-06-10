@@ -10,14 +10,24 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
 public class MeItemUtils {
 	
@@ -67,6 +77,14 @@ public class MeItemUtils {
 			return MeStorage.sizeDisk4;
 		}
 		return 0;
+	}
+	public static void renameServer(Player p,Block b,BlockMenu menu) {
+		
+		ChatInput.waitForPlayer(MeStorage.instance, p, (message) -> {
+			BlockStorage.addBlockInfo(b, "name", message);
+			p.sendMessage(ChatColor.WHITE+"Server renamed to: "+message);
+			menu.replaceExistingItem(5, new CustomItemStack(new ItemStack(Material.NAME_TAG),ChatColor.WHITE+ "Rename server",ChatColor.GRAY+"now: "+message));
+		});
 	}
 	
 }

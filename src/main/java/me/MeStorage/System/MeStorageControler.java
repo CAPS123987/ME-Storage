@@ -113,7 +113,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		if(pendingItems.containsKey(b.getLocation())) {
 			
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.DRIVES.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.DISKS.type)) {
 			serverBorder(menu);
 			diskPage(menu,b);
 			
@@ -132,12 +132,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	
 	public void diskPage(BlockMenu menu, Block b) {
 
-		menu.replaceExistingItem(server_inspect,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Back to main menu",ChatColor.GRAY+"Click go back to main menu"));
-		menu.addMenuClickHandler(server_inspect, (p,s,i,a)->{
-			BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
-			newInstance(menu,b);
-			return false;
-		});
+		backButton(menu,b);
 		
 		menu.addPlayerInventoryClickHandler((p,s,i,a)->false);
 		
@@ -149,10 +144,21 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			String[] list = disks.split(",");
 			for(String disk:list) {
 				if(!disk.isEmpty()) {
-					SlimefunItemStack item =new SlimefunItemStack("DISK",
-							MeItemUtils.DISK_HEAD,
-							ChatColor.WHITE+"Disk "+disk
-					    );
+					String name = BlockStorage.getLocationInfo(l, "name");
+					SlimefunItemStack item = null;
+					if(name == null) {
+						item =new SlimefunItemStack("DISK",
+								MeItemUtils.DISK_HEAD,
+								ChatColor.WHITE+"Disk "+disk,
+								ChatColor.GRAY+"Located in server "+count
+						    );
+					}else {
+						item =new SlimefunItemStack("DISK",
+								MeItemUtils.DISK_HEAD,
+								ChatColor.WHITE+"Disk "+disk,
+								ChatColor.GRAY+"Located in server "+name
+						    );
+					}
 					ItemStack temp = menu.pushItem(item, server_slots);
 					if(temp!=null) {
 						menu.replaceExistingItem(server_overflow, new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE,ChatColor.BLUE+"And More"));
@@ -171,12 +177,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	
 	
 	public void serverPage(BlockMenu menu,Block b) {
-		menu.replaceExistingItem(server_inspect,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Back to main menu",ChatColor.GRAY+"Click go back to main menu"));
-		menu.addMenuClickHandler(server_inspect, (p,s,i,a)->{
-			BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
-			newInstance(menu,b);
-			return false;
-		});
+		backButton(menu,b);
 		
 		menu.addPlayerInventoryClickHandler((p,s,i,a)->false);
 		
@@ -184,14 +185,28 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		List<Location> locations = net.getServers();
 		int count = 1;
 		for(Location l:locations) {
-			SlimefunItemStack item =new SlimefunItemStack("SERVER",
-					MeItemUtils.SERVER_HEAD,
-			        ChatColor.WHITE+"Server: "+count +" located at:",
-			        ChatColor.GRAY+"X: "+l.getBlockX(),
-			        ChatColor.GRAY+"Y: "+l.getBlockY(),
-			        ChatColor.GRAY+"Z: "+l.getBlockZ(),
-			        ChatColor.GRAY+"Status: "+BlockStorage.getLocationInfo(l, "Status")
-			    );
+			String name = BlockStorage.getLocationInfo(l, "name");
+			SlimefunItemStack item = null;
+			if(name == null) {
+				item =new SlimefunItemStack("SERVER",
+						MeItemUtils.SERVER_HEAD,
+				        ChatColor.WHITE+"Server "+count +" located at:",
+				        ChatColor.GRAY+"X: "+l.getBlockX(),
+				        ChatColor.GRAY+"Y: "+l.getBlockY(),
+				        ChatColor.GRAY+"Z: "+l.getBlockZ(),
+				        ChatColor.GRAY+"Status: "+BlockStorage.getLocationInfo(l, "Status")
+				    );
+			}else {
+				item =new SlimefunItemStack("SERVER",
+						MeItemUtils.SERVER_HEAD,
+				        ChatColor.WHITE+name +" located at:",
+				        ChatColor.GRAY+"X: "+l.getBlockX(),
+				        ChatColor.GRAY+"Y: "+l.getBlockY(),
+				        ChatColor.GRAY+"Z: "+l.getBlockZ(),
+				        ChatColor.GRAY+"Status: "+BlockStorage.getLocationInfo(l, "Status")
+				    );
+			}
+			
 			ItemStack temp = menu.pushItem(item, server_slots);
 			
 			if(temp!=null) {
@@ -215,6 +230,13 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menu.replaceExistingItem(server_inspect,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Inspect current servers",ChatColor.GRAY+"Click to show registered servers"));
 		menu.addMenuClickHandler(server_inspect, (p,s,i,a)->{
 			BlockStorage.addBlockInfo(b, "menu", menus.SERVERS.type);
+			newInstance(menu,b);
+			return false;
+		});
+		
+		menu.replaceExistingItem(disk_inspect,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Inspect current Drives",ChatColor.GRAY+"Click to show registered servers"));
+		menu.addMenuClickHandler(disk_inspect, (p,s,i,a)->{
+			BlockStorage.addBlockInfo(b, "menu", menus.DISKS.type);
 			newInstance(menu,b);
 			return false;
 		});
@@ -356,6 +378,15 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				}
 			}
 		}
+	}
+	
+	public void backButton(BlockMenu menu,Block b) {
+		menu.replaceExistingItem(server_inspect,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Back to main menu",ChatColor.GRAY+"Click go back to main menu"));
+		menu.addMenuClickHandler(server_inspect, (p,s,i,a)->{
+			BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
+			newInstance(menu,b);
+			return false;
+		});
 	}
 	
 	public BlockBreakHandler onBreak(){

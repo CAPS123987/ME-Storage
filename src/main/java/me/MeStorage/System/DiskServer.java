@@ -28,6 +28,7 @@ import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.MeDisk.MeDiskManager;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
+import me.MeStorage.Utils.MeItemUtils;
 import me.MeStorage.Utils.ScanNetwork;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -48,9 +49,9 @@ EnergyNetComponent,ScanNetwork {
     private static final int[] outputBorder = {};
     public static final int status = 4;
     public static final int statusUpdate = 3;
-    public static final int statusHidden = 5;
     private static final int[] input = {};
     private static final int[] output = {};
+    private static final int rename = 5;
     
 	public DiskServer(int stage,SlimefunItemStack item,ItemStack[] stack){
 		
@@ -70,6 +71,13 @@ EnergyNetComponent,ScanNetwork {
 	
 	public void newInstance(BlockMenu menu,Block b) {
 		addHandlers(menu,b);
+		String name = BlockStorage.getLocationInfo(b.getLocation(), "name");
+		if(name == null) {
+			menu.replaceExistingItem(rename, new CustomItemStack(new ItemStack(Material.NAME_TAG),ChatColor.WHITE+ "Rename server"));
+		}else {
+			menu.replaceExistingItem(rename, new CustomItemStack(new ItemStack(Material.NAME_TAG),ChatColor.WHITE+ "Rename server",ChatColor.GRAY+"now: "+name));
+		}
+		
 	}
 	public void updateStatus(BlockMenu menu,Block b,int tier) {
 		
@@ -172,6 +180,11 @@ EnergyNetComponent,ScanNetwork {
 			updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
         	return false;
         });
+		menu.addMenuClickHandler(rename, (p,s,i,a)->{
+			p.sendMessage(ChatColor.DARK_RED+"Rename server by typing in chat and then enter");
+			MeItemUtils.renameServer(p, b,menu);
+			return false;
+		});
 	}
 	
 
@@ -286,7 +299,8 @@ EnergyNetComponent,ScanNetwork {
         }
         preset.addItem(statusUpdate, new CustomItemStack(new ItemStack(Material.ORANGE_WOOL),ChatColor.GOLD+ "Turn on/off"),
                 ChestMenuUtils.getEmptyClickHandler());
-        
+        preset.addItem(rename, new CustomItemStack(new ItemStack(Material.NAME_TAG),ChatColor.WHITE+ "Rename server"),
+                ChestMenuUtils.getEmptyClickHandler());
         
         
         for (int i1 : slots) {
