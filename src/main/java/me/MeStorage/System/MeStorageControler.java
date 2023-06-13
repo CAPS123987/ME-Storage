@@ -395,6 +395,12 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				return false;
 			});
 		}
+		for(int i:slots) {
+			if(menu.getItemInSlot(i)==null) {
+				menu.replaceExistingItem(i, new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE," "));
+				menu.addMenuClickHandler(i,(p,s,i2,a)->false);
+			}
+		}
 	}
 	
 	public void serverPage(BlockMenu menu,Block b) {
@@ -462,6 +468,9 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menuSearchButton(menu, b, search);
 		
 		itemClick(menu,b,main_slots);
+		
+		
+		menu.addMenuOpeningHandler((p)->newInstance(menu,b));
 	}
 	
 	public void menuNextButton(BlockMenu menu, Block b,int slot) {
@@ -584,11 +593,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			}
 			current++;
 		}
-		for(int i:main_slots) {
-			if(menu.getItemInSlot(i)==null) {
-				menu.replaceExistingItem(i, new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE,""));
-			}
-		}
+		
 	}
 	
 	public void getItems(Map<ItemStack,Integer> itemList,Block b) {
@@ -670,6 +675,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	}
 	
 	public double getSlotsOfDisks(Location main) {
+		
 		String id =BlockStorage.getLocationInfo(main, "net");
 		MeNet net= getNetById(Integer.parseInt(id));
 		List<Location> servers = net.getServers();
@@ -685,8 +691,16 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				if(!diskId.isEmpty()) {
 					
 					MeDisk disk = MeStorage.getDisk().getDisks().get(Integer.parseInt(diskId));
-					int size =disk.getItems().size();
-					count=count+size;
+					Map<ItemStack,Integer> diskItems = disk.getItems();
+					
+					//for items in server
+					for(Map.Entry<ItemStack,Integer> entry:diskItems.entrySet()) {
+						ItemStack item = entry.getKey();
+						if(!items.contains(item)) {
+							items.add(item);
+							count++;
+						}
+					}
 				}
 				
 			}
