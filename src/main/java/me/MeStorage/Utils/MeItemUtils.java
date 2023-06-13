@@ -18,6 +18,7 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -78,8 +79,9 @@ public class MeItemUtils {
 		}
 		return 0;
 	}
+	
 	public static void renameServer(Player p,Block b,BlockMenu menu) {
-		
+		p.closeInventory();
 		ChatInput.waitForPlayer(MeStorage.instance, p, (message) -> {
 			BlockStorage.addBlockInfo(b, "name", message);
 			p.sendMessage(ChatColor.WHITE+"Server renamed to: "+message);
@@ -87,4 +89,19 @@ public class MeItemUtils {
 		});
 	}
 	
+	public static ItemStack removeAmount(ItemStack item) {
+		ItemMeta meta =item.getItemMeta();
+		List<String> lore = meta.getLore();
+		if(lore.size()==1) {
+			meta.setLore(new ArrayList<String>());
+			item.setItemMeta(meta);
+			return item;
+		}
+		lore.remove(lore.size()-1);
+		
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		return item;
+		
+	}
 }

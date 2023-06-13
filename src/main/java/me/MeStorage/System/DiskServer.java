@@ -71,6 +71,7 @@ EnergyNetComponent,ScanNetwork {
 	
 	public void newInstance(BlockMenu menu,Block b) {
 		addHandlers(menu,b);
+		updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
 		String name = BlockStorage.getLocationInfo(b.getLocation(), "name");
 		if(name == null) {
 			menu.replaceExistingItem(rename, new CustomItemStack(new ItemStack(Material.NAME_TAG),ChatColor.WHITE+ "Rename server"));
@@ -117,6 +118,7 @@ EnergyNetComponent,ScanNetwork {
 	}
 	
 	public void addHandlers(BlockMenu menu,Block b) {
+		int[] slot = slots(getSlotTier(BlockStorage.getLocationInfo(b.getLocation(), "id")));
 		menu.addPlayerInventoryClickHandler((p, s, i, a) -> {
         	
         	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
@@ -152,27 +154,19 @@ EnergyNetComponent,ScanNetwork {
         	Bukkit.broadcastMessage("false");
         	return false;
         	});
-		menu.addMenuOpeningHandler((p)->{
-			String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
-			if(status.equals("on")) {
-				for (int i1 : slots) {
-		            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
-		            	return false;
-		            });
-				}
-			}
-			updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
-		});
+
 		menu.addMenuClickHandler(statusUpdate, (p, s, i, a)->{
 			String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
 			
 			if(status.equals("on")) {
 				BlockStorage.addBlockInfo(b, "Status", "off");
-				defaultSlots(menu);
+				defaultSlots(menu,slot);
+				newInstance(menu,b);
 			}else {
 				BlockStorage.addBlockInfo(b, "Status", "on");
-				for (int i1 : slots) {
+				for (int i1 : slot) {
 		            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
+		            	newInstance(menu,b);
 		            	return false;
 		            });
 				}
@@ -259,8 +253,9 @@ EnergyNetComponent,ScanNetwork {
     		
     	};
     }
-    public void defaultSlots(BlockMenu preset) {
-    	for (int i1 : slots) {
+    public void defaultSlots(BlockMenu preset,int[] slot) {
+    	
+    	for (int i1 : slot) {
             preset.addMenuClickHandler(i1, (p, s, i, a)->{
             	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
 	        	SlimefunItem sfItem = isSlimefun(i);
@@ -286,15 +281,15 @@ EnergyNetComponent,ScanNetwork {
     	
     	
         for (int i : border) {
-            preset.addItem(i, new CustomItemStack(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), " "),
+            preset.addItem(i, ChestMenuUtils.getBackground(),
                 ChestMenuUtils.getEmptyClickHandler());
         }
         for (int i : inputBorder) {
-            preset.addItem(i, new CustomItemStack(new ItemStack(Material.CYAN_STAINED_GLASS_PANE), " "),
+            preset.addItem(i, ChestMenuUtils.getInputSlotTexture(),
                 ChestMenuUtils.getEmptyClickHandler());
         }
         for (int i : outputBorder) {
-            preset.addItem(i, new CustomItemStack(new ItemStack(Material.ORANGE_STAINED_GLASS_PANE), " "),
+            preset.addItem(i, ChestMenuUtils.getOutputSlotTexture(),
                 ChestMenuUtils.getEmptyClickHandler());
         }
         preset.addItem(statusUpdate, new CustomItemStack(new ItemStack(Material.ORANGE_WOOL),ChatColor.GOLD+ "Turn on/off"),

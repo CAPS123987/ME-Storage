@@ -42,6 +42,8 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static int sizeDisk2;
 	public static int sizeDisk3;
 	public static int sizeDisk4;
+	
+	private static boolean error;
     @Override
     public void onEnable() {
         // Read something from your config.yml
@@ -71,16 +73,19 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new MeStorageControler().register(this);
         new MeConnector().register(this);
         new tempMachine().register(this);
-       
+        error = false;
         PluginStart(cfg);
         
     }
     
     private void PluginStart(Config cfg) {
     	
-    	
-    	loadNet(cfg);
-    	loadDisk(cfg);
+    	try {
+	    	loadNet(cfg);
+	    	loadDisk(cfg);
+    	}catch(Exception e) {
+    		error = true;
+    	}
     	autoSave.start(this, cfg.getInt("auto-save-delay-in-minutes"));
     	
     	
@@ -91,10 +96,11 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	File file = new File(MeStorage.instance.getDataFolder(),"Networks.yml");
     	
     	if(file.exists()) {
+    		
 			FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
 			List<MeNet> list = (List<MeNet>) yaml.get("networks");
-			ConfigurationSection tempp = yaml.getConfigurationSection("");
 			meNetManager = new MeNetManager(list);
+    		
 			
 			
 		}else {
@@ -125,7 +131,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 			/*MeDisk test = yaml.getSerializable("disks", MeDisk.class);
 			List<Map<?, ?>> tempDisk = yaml.getMapList("disks");
 			*/
-
+			
 			meDiskManager = new MeDiskManager(loadHashMap(yaml));
 			//arrayToHashMap(tempDisk);
 			
@@ -246,6 +252,9 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     
     public static Logger logger() {
         return instance.getLogger();
+    }
+    public static boolean hasError() {
+    	return error;
     }
 
 }

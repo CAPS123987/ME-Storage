@@ -5,7 +5,11 @@ public enum menus {
 	
 	DISKS("Disks"),
 	
-	SERVERS("Servers");
+	SERVERS("Servers"),
+	
+	EXPORT("Export"),
+	
+	SEARCH("Search");
 
 	public String type;
 	menus(String string) {

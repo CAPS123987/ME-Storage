@@ -77,46 +77,32 @@ public class MeDisk implements ConfigurationSerializable{
 		return true;
 	}
 	
-	/*public boolean pushItem(ItemStack item) {
-		if(item.getAmount()>getSpace()) {
-			return false;
+	public int tryExportItem(ItemStack origoItem) {
+		ItemStack item = origoItem.clone();
+		item.setAmount(1);
+		if(items.containsKey(item)) {
+			if(items.get(item)>=origoItem.getAmount()) {
+				return origoItem.getAmount();
+			}else {
+				return items.get(item);
+			}
 		}
-		if(item.getType()==Material.AIR) {
-			return false;
-		}
-		if(item.getAmount()<=0) {
-			return false;
-		}
-		currentCapacity = currentCapacity+item.getAmount();
-		for(ItemStack i:items) {
-			if(i.isSimilar(item)) {
-				int iAmount = i.getAmount();
-				int maxSize = i.getMaxStackSize();
-				
-				if(iAmount!=maxSize) {
-					
-					if(iAmount+item.getAmount()>maxSize) {
-							
-							int space = maxSize - iAmount;
-							item.setAmount(item.getAmount()-space);
-							i.setAmount(maxSize);
-						}else {
-							
-							i.setAmount(iAmount+item.getAmount());
-							item.setAmount(0);
-							break;
-						}
-					}
+		return 0;
+			
+	}
+	public void exportItem(ItemStack origoItem) {
+		ItemStack item = origoItem.clone();
+		item.setAmount(1);
+		if(items.containsKey(item)) {
+			if(items.get(item)>=origoItem.getAmount()) {
+				if(items.get(item)-origoItem.getAmount()==0) {
+					items.remove(item);
+				}else {
+					items.replace(item, items.get(item)-origoItem.getAmount());
 				}
 			}
-		
-		if(item.getAmount()>0&&item.getType()!=Material.AIR) {
-			items.add(item);
 		}
-		MeStorage.saveDisks();
-		return true;
-	}*/
-	
+	}
 	
 	@Override
 	public Map<String, Object> serialize() {
