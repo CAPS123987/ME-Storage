@@ -93,15 +93,21 @@ public class MeDisk implements ConfigurationSerializable{
 	public void exportItem(ItemStack origoItem) {
 		ItemStack item = origoItem.clone();
 		item.setAmount(1);
+		//has item
 		if(items.containsKey(item)) {
+			//amount bigger than amount
 			if(items.get(item)>=origoItem.getAmount()) {
-				if(items.get(item)-origoItem.getAmount()==0) {
+				if(items.get(item)-origoItem.getAmount()<1) {
 					items.remove(item);
+					currentCapacity=currentCapacity-origoItem.getAmount();
 				}else {
+					currentCapacity=currentCapacity-origoItem.getAmount();
 					items.replace(item, items.get(item)-origoItem.getAmount());
 				}
+				
 			}
 		}
+		MeStorage.saveDisks();
 	}
 	
 	@Override

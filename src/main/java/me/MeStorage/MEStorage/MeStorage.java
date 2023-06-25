@@ -22,12 +22,14 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import me.MeStorage.AutoSave.AutoSave;
 import me.MeStorage.Items.Items;
+import me.MeStorage.Items.MeRemoteControler;
 import me.MeStorage.MeDisk.MeDisk;
 import me.MeStorage.MeDisk.MeDiskManager;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.MeNet.MeNetManager;
 import me.MeStorage.System.DiskServer;
 import me.MeStorage.System.MeConnector;
+import me.MeStorage.System.MeInterface;
 import me.MeStorage.System.MeStorageControler;
 import me.MeStorage.temp.tempMachine;
 
@@ -73,6 +75,9 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new MeStorageControler().register(this);
         new MeConnector().register(this);
         new tempMachine().register(this);
+        new MeInterface().register(this);
+        
+        new MeRemoteControler().register(this);
         error = false;
         PluginStart(cfg);
         

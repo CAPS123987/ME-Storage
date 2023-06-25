@@ -109,36 +109,34 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			public void tick(Block b, SlimefunItem it, Config data) {
 				if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.MAIN.type)) {
 					BlockMenu menu = BlockStorage.getInventory(b);
+					
+					boolean test = false;
 					for(int i:input) {
 						ItemStack item = menu.getItemInSlot(i);
 						if(item!=null) {
 							String id =BlockStorage.getLocationInfo(b.getLocation(), "net");
 							MeNet net= getNetById(Integer.parseInt(id));
-							List<Location> servers = net.getServers();
 							List<ItemStack> items = new ArrayList<ItemStack>();
-							
+					
 							
 							items.add(new ItemStack(Material.AIR));
-							for(Location l:servers) {
-								String disks = BlockStorage.getLocationInfo(l, "Drives");
-								String[] list = disks.split(",");
-								for(String diskId:list) {
-									
-									if(!diskId.isEmpty()) {
-										
-										MeDisk disk = MeStorage.getDisk().getDisks().get(Integer.parseInt(diskId));
-										if(!disk.isFull()) {
-											if(disk.pushItem(item)) {
-												newInstance(menu,b);
-												menu.replaceExistingItem(i, new ItemStack(Material.AIR));
-												return;
-											}
-										}
+							
+							for(int diskId:net.getDisks()) {
+							
+								MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+								if(!disk.isFull()) {
+									if(disk.pushItem(item)) {
+										test=true;
+										menu.replaceExistingItem(i, new ItemStack(Material.AIR));
+										break;
 									}
 								}
+								
 							}
-							newInstance(menu,b);
 						}
+					}
+					if(test) {
+						newInstance(menu,b);
 					}
 				}
 			}
@@ -169,7 +167,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menu.addMenuOpeningHandler((p)->{
 			newInstance(menu,b);
 		});
-		clearMenu(menu);
+		clearMenu(menu,b);
 		
 		if(MeStorage.hasError()) {
 			menu.replaceExistingItem(errorSlot, new CustomItemStack(Material.BARRIER,ChatColor.DARK_RED+"Error occurred while loading server, please contact server admin"));
@@ -207,8 +205,8 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	}
 	
 	public void itemExport(BlockMenu menu, Block b){
-		ItemStack item = exportItems.get(b);
-		menu.replaceExistingItem(buyItem, item);
+		ItemStack item2 = exportItems.get(b);
+		menu.replaceExistingItem(buyItem, item2);
 		
 		menu.replaceExistingItem(19,new CustomItemStack(new ItemStack(Material.PURPLE_STAINED_GLASS_PANE,32),ChatColor.LIGHT_PURPLE+"-32"));
 		addAmount(menu,b,19,-32);
@@ -231,33 +229,23 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			List<Location> servers = net.getServers();
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add(new ItemStack(Material.AIR));
-			//for servers
-			for(Location l:servers) {
-				String disks = BlockStorage.getLocationInfo(l, "Drives");
-				String[] list = disks.split(",");
-				
-				//for disks
-				for(String diskId:list) {
-					if(!diskId.isEmpty()) {
-						MeDisk disk = MeStorage.getDisk().getDisks().get(Integer.parseInt(diskId));
+
+			for(int diskId:net.getDisks()) {
+					MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+					ItemStack item = item2.clone();
+					//export
+					int able =disk.tryExportItem(item);
+					if(able!=0) {
+						item.setAmount(able);
+						disk.exportItem(item);
+						Map<Integer, ItemStack> map= p.getInventory().addItem(item);
 						
-						//export
-						int able =disk.tryExportItem(item);
-							
-						if(able!=0) {
-							item.setAmount(able);
-							Map<Integer, ItemStack> map= p.getInventory().addItem(item);
-							
-							if(map.size()>0) {
-								p.getWorld().dropItemNaturally(p.getLocation(), map.get(0));
-							}
-							disk.exportItem(item);
-								
-							
-							break;
+						if(map.size()>0) {
+							p.getWorld().dropItemNaturally(p.getLocation(), map.get(0));
 						}
-						
-					}
+										
+					break;
+
 				}
 			}
 			
@@ -557,6 +545,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menu.replaceExistingItem(slot, new CustomItemStack(Material.NAME_TAG,ChatColor.GRAY+"Search for item"));
 		menu.addMenuClickHandler(slot, (p,s,i2,a)->{
 			p.closeInventory();
+			p.sendMessage(ChatColor.DARK_RED+"Search for item by typing in chat");
 			ChatInput.waitForPlayer(MeStorage.instance, p, (message) -> {
 				BlockMenu menu2 = BlockStorage.getInventory(b);
 				BlockStorage.addBlockInfo(b, "menu", menus.SEARCH.type);
@@ -599,34 +588,25 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	public void getItems(Map<ItemStack,Integer> itemList,Block b) {
 		String id =BlockStorage.getLocationInfo(b.getLocation(), "net");
 		MeNet net= getNetById(Integer.parseInt(id));
-		List<Location> servers = net.getServers();
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		items.add(new ItemStack(Material.AIR));
-		//for servers
-		for(Location l:servers) {
-			String disks = BlockStorage.getLocationInfo(l, "Drives");
-			String[] list = disks.split(",");
+
+		for(int diskId:net.getDisks()) {
+			MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
 			
-			//for disks
-			for(String diskId:list) {
-				if(!diskId.isEmpty()) {
-					MeDisk disk = MeStorage.getDisk().getDisks().get(Integer.parseInt(diskId));
+			Map<ItemStack,Integer> diskItems = disk.getItems();
+			
+			//for items in server
+			diskItems.forEach((item,amount1)->{
 					
-					Map<ItemStack,Integer> diskItems = disk.getItems();
-					
-					//for items in server
-					diskItems.forEach((item,amount1)->{
-						
-							if(!items.contains(item)) {
-								items.add(item);
-								itemList.put(item, amount1);
-							}else {
-								int amount = itemList.get(item);
-								itemList.replace(item, amount1+amount);
-						}
-					});
+					if(!items.contains(item)) {
+						items.add(item);
+						itemList.put(item, amount1);
+					}else {
+						int amount = itemList.get(item);
+						itemList.replace(item, amount1+amount);
 				}
-			}
+			});
 		}
 	}
 	
@@ -666,11 +646,20 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		return i;
 	}
 	
-	public void clearMenu(BlockMenu menu) {
+	public void clearMenu(BlockMenu menu,Block b) {
 		menu.addPlayerInventoryClickHandler((p,s,i,a)->true);
-		for(int i = 0;i!=54;i++) {
-			menu.replaceExistingItem(i, new ItemStack(Material.AIR));
-			menu.addMenuClickHandler(i, (p, s, i2, a) -> false);
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.DISKS.type)){
+			for(int i = 0;i!=54;i++) {
+				if(!(i==16||i==25||i==34||i==43)) {
+					menu.replaceExistingItem(i, new ItemStack(Material.AIR));
+					menu.addMenuClickHandler(i, (p, s, i2, a) -> false);
+				}
+			}
+		}else {
+			for(int i = 0;i!=54;i++) {
+				menu.replaceExistingItem(i, new ItemStack(Material.AIR));
+				menu.addMenuClickHandler(i, (p, s, i2, a) -> false);
+			}
 		}
 	}
 	
@@ -678,31 +667,22 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		
 		String id =BlockStorage.getLocationInfo(main, "net");
 		MeNet net= getNetById(Integer.parseInt(id));
-		List<Location> servers = net.getServers();
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		
 		items.add(new ItemStack(Material.AIR));
 		double count =0;
-		for(Location l:servers) {
-			String disks = BlockStorage.getLocationInfo(l, "Drives");
-			String[] list = disks.split(",");
-			for(String diskId:list) {
+		for(int diskId:net.getDisks()) {
+					
+			MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+			Map<ItemStack,Integer> diskItems = disk.getItems();
 				
-				if(!diskId.isEmpty()) {
-					
-					MeDisk disk = MeStorage.getDisk().getDisks().get(Integer.parseInt(diskId));
-					Map<ItemStack,Integer> diskItems = disk.getItems();
-					
-					//for items in server
-					for(Map.Entry<ItemStack,Integer> entry:diskItems.entrySet()) {
-						ItemStack item = entry.getKey();
-						if(!items.contains(item)) {
-							items.add(item);
-							count++;
-						}
-					}
+			//for items in server
+			for(Map.Entry<ItemStack,Integer> entry:diskItems.entrySet()) {
+				ItemStack item = entry.getKey();
+				if(!items.contains(item)) {
+					items.add(item);
+					count++;
 				}
-				
 			}
 		}
 		return count;

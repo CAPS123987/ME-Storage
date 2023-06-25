@@ -150,8 +150,7 @@ EnergyNetComponent,ScanNetwork {
         			}
         			return true;
         		
-        	}
-        	Bukkit.broadcastMessage("false");
+        		}
         	return false;
         	});
 
@@ -172,6 +171,7 @@ EnergyNetComponent,ScanNetwork {
 				}
 			}
 			updateStatus(menu,b,getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id")));
+			findClose(b);
         	return false;
         });
 		menu.addMenuClickHandler(rename, (p,s,i,a)->{

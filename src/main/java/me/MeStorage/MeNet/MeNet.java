@@ -15,6 +15,7 @@ public class MeNet implements ConfigurationSerializable{
 	protected List<Location> machines = new ArrayList<Location>();
 	protected List<Location> servers = new ArrayList<Location>();
 	protected int id;
+	protected List<Integer> disks = new ArrayList<Integer>();
 	
 	
 	public MeNet() {
@@ -22,6 +23,10 @@ public class MeNet implements ConfigurationSerializable{
 	
 	public int getId() {
 		return id;
+	}
+	
+	public List<Integer> getDisks(){
+		return disks;
 	}
 	
 	public Location getMain() {
@@ -43,6 +48,11 @@ public class MeNet implements ConfigurationSerializable{
 	public void setMain(Location main) {
 		Validate.notNull(main,"Main can't be null");
 		this.main = main;
+	}
+	
+	public void setDisks(List<Integer> list) {
+		Validate.notNull(main,"Main can't be null");
+		this.disks = list;
 	}
 	
 	public void setConnectors(List<Location> list) {
@@ -101,6 +111,7 @@ public class MeNet implements ConfigurationSerializable{
 		meNet.setMachines((List<Location>) args.get("machines"));
 		meNet.setId((int) args.get("id"));
 		meNet.setServers((List<Location>) args.get("servers"));
+		meNet.setDisks((List<Integer>) args.get("disks"));
 		return meNet;
     }
 
@@ -113,6 +124,7 @@ public class MeNet implements ConfigurationSerializable{
 		map.put("machines", machines);
 		map.put("main", main);
 		map.put("id", id);
+		map.put("disks", disks);
 		return map;
 	}
 	
