@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import java.util.Map;
 
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.Utils.MeItemUtils;

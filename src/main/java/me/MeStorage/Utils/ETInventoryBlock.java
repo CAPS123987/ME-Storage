@@ -9,10 +9,8 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.awt.Component;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public interface ETInventoryBlock {
 

@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -226,7 +221,6 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menu.addMenuClickHandler(31, (p,s,i,a)->{
 			String id =BlockStorage.getLocationInfo(b.getLocation(), "net");
 			MeNet net= getNetById(Integer.parseInt(id));
-			List<Location> servers = net.getServers();
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add(new ItemStack(Material.AIR));
 

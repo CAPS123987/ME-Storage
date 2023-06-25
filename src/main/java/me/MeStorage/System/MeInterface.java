@@ -1,8 +1,6 @@
 package me.MeStorage.System;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;

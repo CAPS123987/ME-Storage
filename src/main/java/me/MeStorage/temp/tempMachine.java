@@ -22,6 +22,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
+@SuppressWarnings("deprecation")
 public class tempMachine extends SlimefunItem implements ETInventoryBlock{
 	
 	private final int[] border = {0,9};
@@ -86,7 +87,6 @@ public class tempMachine extends SlimefunItem implements ETInventoryBlock{
 	
 	
 	
-	@SuppressWarnings("deprecation")
 	private void constructMenu(BlockMenuPreset preset) {
 		
 		
