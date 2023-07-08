@@ -17,12 +17,18 @@ public class MeDiskManager {
 	protected Map<Integer,MeDisk> disks = new HashMap<Integer,MeDisk>();
 	protected int diskCount;
 	
+    FileConfiguration cfg = MeStorage.instance.getConfig();
+	
 	public MeDiskManager(int diskcount) {
 		diskCount=diskcount;
 	}
 	
 	public Map<Integer,MeDisk> getDisks(){
 		return disks;
+	}
+	
+	public int getDiskCount() {
+		return diskCount;
 	}
 	
 	public MeDisk getDisk(int id){

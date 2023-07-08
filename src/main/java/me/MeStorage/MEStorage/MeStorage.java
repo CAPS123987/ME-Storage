@@ -90,7 +90,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	}catch(Exception e) {
     		error = true;
     	}
-    	autoSave.start(this, 1/*cfg.getInt("auto-save-delay-in-minutes")*/);
+    	autoSave.start(this, cfg.getInt("auto-save-delay-in-minutes"));
     	
     	
     }
@@ -128,14 +128,6 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 			}
 			meNetManager = new MeNetManager(list);
 		}
-    }
-    
-    
-    public static Map<Integer,MeDisk> arrayToHashMap(List<Map<?, ?>> list){
-    	for(Map<?, ?> map :list) {
-    		instance.getLogger().log(Level.WARNING,map.toString());
-    	}
-    	return new HashMap<Integer,MeDisk>();
     }
     
     public static int getMaxSize() {
@@ -185,6 +177,8 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     		yaml.set("disk", disk);
     		try {yaml.save(file);} catch (IOException e) {}
     	}
+    	MeStorage.getInstance().getConfig().set("CurrendDisk", meDiskManager.getDiskCount());
+    	MeStorage.getInstance().saveConfig();
     	return true;
     }
 
@@ -208,5 +202,4 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     public static boolean hasError() {
     	return error;
     }
-
 }
