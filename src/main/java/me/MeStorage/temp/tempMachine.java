@@ -76,7 +76,7 @@ public class tempMachine extends SlimefunItem implements ETInventoryBlock{
 				if(item.getType().equals(Material.AIR)) {
 					return;
 				}
-				MeDisk disk =MeStorage.getDisk().getDisks().get(1);
+				MeDisk disk =MeStorage.getDisk().getDisk(1);
 				disk.pushItem(item);
 				menu.replaceExistingItem(1, new ItemStack(Material.AIR));
 				

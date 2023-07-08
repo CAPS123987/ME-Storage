@@ -86,13 +86,17 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	
     	try {
 	    	loadNet(cfg);
-	    	loadDisk(cfg);
+	    	loadDisks(cfg);
     	}catch(Exception e) {
     		error = true;
     	}
-    	autoSave.start(this, cfg.getInt("auto-save-delay-in-minutes"));
+    	autoSave.start(this, 1/*cfg.getInt("auto-save-delay-in-minutes")*/);
     	
     	
+    }
+    
+    private void loadDisks(Config cfg) {
+    	meDiskManager = new MeDiskManager(cfg.getInt("CurrendDisk"));
     }
     
     @SuppressWarnings("unchecked")
@@ -126,41 +130,6 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 		}
     }
     
-    private void loadDisk(Config cfg) {
-    	File file = new File(MeStorage.instance.getDataFolder(),"Disk.yml");
-    	
-    	if(file.exists()) {
-			
-			FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
-			/*MeDisk test = yaml.getSerializable("disks", MeDisk.class);
-			List<Map<?, ?>> tempDisk = yaml.getMapList("disks");
-			*/
-			
-			meDiskManager = new MeDiskManager(loadHashMap(yaml));
-			//arrayToHashMap(tempDisk);
-			
-			//Map<Integer,MeDisk> list = (Map<Integer,MeDisk>) yaml.getMapList("disks");
-			//meDiskManager = new MeDiskManager(list);
-			
-		}else {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
-			Map<Integer,MeDisk> list = new HashMap<Integer,MeDisk>();
-			
-			yaml.set("Disks", list);
-			saveHashMap(list,yaml);
-			try {
-				yaml.save(file);
-			} catch (IOException e) {
-				Bukkit.broadcastMessage(e.toString());
-			}
-			meDiskManager = new MeDiskManager(list);
-		}
-    }
     
     public static Map<Integer,MeDisk> arrayToHashMap(List<Map<?, ?>> list){
     	for(Map<?, ?> map :list) {
@@ -208,22 +177,15 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     }
     
     public static boolean saveDisks() {
-    	try {
-	    	File file = new File(MeStorage.instance.getDataFolder(),"Disk.yml");
-	    	FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
-	    	//yaml.set("disks", getDisk().getDisks());
-	    	saveHashMap(getDisk().getDisks(),yaml);
-	    	try {
-				yaml.save(file);
-				return true;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-	    	
-    	}catch(Exception e) {
-    		return false;
+    	for(Map.Entry<Integer, MeDisk> entry:getDisk().getDisks().entrySet()) {
+    		int id = entry.getKey();
+    		MeDisk disk = entry.getValue();
+    		File file = new File(MeStorage.instance.getDataFolder(),id+".yml");
+    		FileConfiguration yaml=YamlConfiguration.loadConfiguration(file);
+    		yaml.set("disk", disk);
+    		try {yaml.save(file);} catch (IOException e) {}
     	}
+    	return true;
     }
 
     @Override
@@ -233,20 +195,6 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     }
     public static MeStorage getInstance() {
         return instance;
-    }
-    
-    public static void saveHashMap(Map<Integer, MeDisk> hm,FileConfiguration config) {
-    	for (Integer key : hm.keySet()) {
-    		config.set("Disks."+key, hm.get(key));
-    		}
-    }
-    
-    public Map<Integer, MeDisk> loadHashMap(FileConfiguration config) {
-    	Map<Integer, MeDisk> hm = new HashMap<Integer, MeDisk>();
-			for (String key : config.getConfigurationSection("Disks").getKeys(false)) {
-				hm.put(Integer.parseInt(key), (MeDisk) config.get("Disks."+key));
-			}
-    	return hm;
     }
     
     @Override

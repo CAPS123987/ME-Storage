@@ -7,7 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -106,23 +110,22 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 					BlockMenu menu = BlockStorage.getInventory(b);
 					
 					boolean test = false;
+					
+					//for inputs
 					for(int i:input) {
 						ItemStack item = menu.getItemInSlot(i);
+						//not air
 						if(item!=null) {
 							String id =BlockStorage.getLocationInfo(b.getLocation(), "net");
 							MeNet net= getNetById(Integer.parseInt(id));
-							List<ItemStack> items = new ArrayList<ItemStack>();
-					
-							
-							items.add(new ItemStack(Material.AIR));
 							
 							for(int diskId:net.getDisks()) {
 							
-								MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+								MeDisk disk = MeStorage.getDisk().getDisk(diskId);
 								if(!disk.isFull()) {
 									if(disk.pushItem(item)) {
 										test=true;
-										menu.replaceExistingItem(i, new ItemStack(Material.AIR));
+										item.setAmount(0);
 										break;
 									}
 								}
@@ -143,7 +146,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		return new BlockPlaceHandler(false) {
 
 			@Override
-			public void onPlayerPlace(BlockPlaceEvent e) {
+			public void onPlayerPlace(@Nonnull BlockPlaceEvent e) {
 				MeNet newNet = new MeNet();
 				newNet.setMain(e.getBlock().getLocation());
 				int empty = findEmpty();
@@ -225,7 +228,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			items.add(new ItemStack(Material.AIR));
 
 			for(int diskId:net.getDisks()) {
-					MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+					MeDisk disk = MeStorage.getDisk().getDisk(diskId);
 					ItemStack item = item2.clone();
 					//export
 					int able =disk.tryExportItem(item);
@@ -335,7 +338,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				if(!disk.isEmpty()) {
 					String name = BlockStorage.getLocationInfo(l, "name");
 					SlimefunItemStack item = null;
-					MeDisk meDisk = MeStorage.getDisk().getDisks().get(Integer.parseInt(disk));
+					MeDisk meDisk = MeStorage.getDisk().getDisk(Integer.parseInt(disk));
 					if(name == null) {
 						item =new SlimefunItemStack("DISK",
 								MeItemUtils.DISK_HEAD,
@@ -495,6 +498,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				BlockStorage.addBlockInfo(b, "page", String.valueOf(page-1));
 				page = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"page"));
 			}
+			
 			newInstance(menu,b);
 			
 			return false;
@@ -511,6 +515,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				BlockStorage.addBlockInfo(b, "page", String.valueOf(page-1));
 				page = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"page"));
 			}
+			
 			newInstance(menu,b);
 			
 			return false;
@@ -586,7 +591,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		items.add(new ItemStack(Material.AIR));
 
 		for(int diskId:net.getDisks()) {
-			MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+			MeDisk disk = MeStorage.getDisk().getDisk(diskId);
 			
 			Map<ItemStack,Integer> diskItems = disk.getItems();
 			
@@ -611,6 +616,9 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				exportItems.remove(b);
 			}
 			BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
+			for(int i2:input) {
+				menu.replaceExistingItem(i2, new ItemStack(Material.AIR));
+			}
 			newInstance(menu,b);
 			return false;
 		});
@@ -642,7 +650,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	
 	public void clearMenu(BlockMenu menu,Block b) {
 		menu.addPlayerInventoryClickHandler((p,s,i,a)->true);
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.DISKS.type)){
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.MAIN.type)){
 			for(int i = 0;i!=54;i++) {
 				if(!(i==16||i==25||i==34||i==43)) {
 					menu.replaceExistingItem(i, new ItemStack(Material.AIR));
@@ -667,7 +675,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		double count =0;
 		for(int diskId:net.getDisks()) {
 					
-			MeDisk disk = MeStorage.getDisk().getDisks().get(diskId);
+			MeDisk disk = MeStorage.getDisk().getDisk(diskId);
 			Map<ItemStack,Integer> diskItems = disk.getItems();
 				
 			//for items in server

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -72,7 +73,6 @@ public class MeDisk implements ConfigurationSerializable{
 		
 		currentCapacity = currentCapacity + item.getAmount();
 		MeStorage.saveDisks();
-		
 		return true;
 	}
 	
@@ -106,7 +106,6 @@ public class MeDisk implements ConfigurationSerializable{
 				
 			}
 		}
-		MeStorage.saveDisks();
 	}
 	
 	@Override
