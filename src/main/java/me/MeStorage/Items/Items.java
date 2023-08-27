@@ -43,31 +43,37 @@ public class Items {
 	public static final SlimefunItemStack MEIMPORTER1 = new SlimefunItemStack("MEIMPORTER1",
 			Material.LIGHT_BLUE_WOOL,
 	        "MEIMPORTER1",
+	        "interval: 3 ticks",
 	        "WIP(importer)"
 	    );
 	public static final SlimefunItemStack MEIMPORTER2 = new SlimefunItemStack("MEIMPORTER2",
 			Material.LIGHT_BLUE_WOOL,
 	        "MEIMPORTER2",
+	        "interval: 2 ticks",
 	        "WIP(importer)"
 	    );
 	public static final SlimefunItemStack MEIMPORTER3 = new SlimefunItemStack("MEIMPORTER3",
 			Material.LIGHT_BLUE_WOOL,
 	        "MEIMPORTER3",
+	        "interval: 1 ticks",
 	        "WIP(importer)"
 	    );
 	public static final SlimefunItemStack MEEXPORTER1 = new SlimefunItemStack("MEEXPORTE1",
 			Material.RED_WOOL,
 	        "MEEXPORTER1",
+	        "interval: 3 ticks",
 	        "WIP(exporter)"
 	    );
 	public static final SlimefunItemStack MEEXPORTER2 = new SlimefunItemStack("MEEXPORTE2",
 			Material.RED_WOOL,
 	        "MEEXPORTER2",
+	        "interval: 2 ticks",
 	        "WIP(exporter)"
 	    );
 	public static final SlimefunItemStack MEEXPORTER3 = new SlimefunItemStack("MEEXPORTE3",
 			Material.RED_WOOL,
 	        "MEEXPORTER3",
+	        "interval: 1 ticks",
 	        "WIP(exporter)"
 	    );
 	public static final SlimefunItemStack SERVER1 = new SlimefunItemStack("SERVER1",
