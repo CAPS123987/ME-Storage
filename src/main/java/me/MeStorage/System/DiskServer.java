@@ -2,7 +2,9 @@ package me.MeStorage.System;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +38,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 
 @SuppressWarnings("deprecation")
-public class DiskServer extends SlimefunItem implements ETInventoryBlock,
+public class DiskServer extends MeComponent implements ETInventoryBlock,
 EnergyNetComponent,ScanNetwork {
 	FileConfiguration cfg = MeStorage.instance.getConfig();
 	
@@ -62,7 +64,7 @@ EnergyNetComponent,ScanNetwork {
 		border = border(stage);
 		slots = slots(stage);
 		createPreset(this, this::constructMenu,this::newInstance);
-		addItemHandler(onBreak(),onPlace());
+		//addItemHandler(onBreak(),onPlace());
 		
 		
 	}
@@ -82,35 +84,37 @@ EnergyNetComponent,ScanNetwork {
 		
 		String status = BlockStorage.getLocationInfo(b.getLocation(),"Status");
 		
-		if(status.equals("on")) {
-			ItemStack item = new ItemStack(Material.GREEN_WOOL);
-			ItemMeta meta = item.getItemMeta();
-			List<String> lore = new ArrayList<String>();
-			String drives = "";
-			String store = "";
-			for(int i:slots(tier)) {
-				if(menu.getItemInSlot(i)!=null) {
-					String id = menu.getItemInSlot(i).getItemMeta().getLore().get(1);
-					
-					//saveItem(Integer.parseInt(id),new ItemStack(Material.BEDROCK));
-					drives = drives+"Drive no. "+id+", ";
-					store = store + id+",";
+		if(status!=null) {
+			if(status.equals("on")) {
+				ItemStack item = new ItemStack(Material.GREEN_WOOL);
+				ItemMeta meta = item.getItemMeta();
+				List<String> lore = new ArrayList<String>();
+				String drives = "";
+				String store = "";
+				for(int i:slots(tier)) {
+					if(menu.getItemInSlot(i)!=null) {
+						String id = menu.getItemInSlot(i).getItemMeta().getLore().get(1);
+						
+						//saveItem(Integer.parseInt(id),new ItemStack(Material.BEDROCK));
+						drives = drives+"Drive no. "+id+", ";
+						store = store + id+",";
+					}
 				}
+				BlockStorage.addBlockInfo(b, "Drives", store);
+				lore.add(ChatColor.AQUA+"Registered Drives: "+drives);
+				meta.setLore(lore);
+				meta.setDisplayName(ChatColor.GREEN+"Status: Server on");
+				item.setItemMeta(meta);
+				menu.replaceExistingItem(DiskServer.status, item);
+			}else {
+				BlockStorage.addBlockInfo(b, "Drives", "");
+				ItemStack item = new ItemStack(Material.RED_WOOL);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(ChatColor.RED+"Status: Server off");
+				item.setItemMeta(meta);
+				menu.replaceExistingItem(DiskServer.status, item);
+				
 			}
-			BlockStorage.addBlockInfo(b, "Drives", store);
-			lore.add(ChatColor.AQUA+"Registered Drives: "+drives);
-			meta.setLore(lore);
-			meta.setDisplayName(ChatColor.GREEN+"Status: Server on");
-			item.setItemMeta(meta);
-			menu.replaceExistingItem(DiskServer.status, item);
-		}else {
-			BlockStorage.addBlockInfo(b, "Drives", "");
-			ItemStack item = new ItemStack(Material.RED_WOOL);
-			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(ChatColor.RED+"Status: Server off");
-			item.setItemMeta(meta);
-			menu.replaceExistingItem(DiskServer.status, item);
-			
 		}
 		
 	}
@@ -173,10 +177,19 @@ EnergyNetComponent,ScanNetwork {
         	return false;
         });
 		menu.addMenuClickHandler(rename, (p,s,i,a)->{
-			p.sendMessage(ChatColor.DARK_RED+"Rename server by typing in chat and then enter");
+			p.sendMessage(ChatColor.YELLOW+"Rename server by typing in chat and then enter");
 			MeItemUtils.renameServer(p, b,menu);
 			return false;
 		});
+		
+		if(BlockStorage.getLocationInfo(b.getLocation(),"Status").equals("on")) {
+			for (int i1 : slot) {
+	            menu.addMenuClickHandler(i1, (p1, s1, i2, a1)->{
+	            	newInstance(menu,b);
+	            	return false;
+	            });
+			}
+		}
 	}
 	
 
@@ -211,45 +224,6 @@ EnergyNetComponent,ScanNetwork {
         }else {
         	return SlimefunItem.getByItem(i);
         }
-    }
-    public BlockBreakHandler onBreak() {
-        return new BlockBreakHandler(false, false) {
-
-            @Override
-            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
-                Block b = e.getBlock();
-                BlockMenu inv = BlockStorage.getInventory(b);
-
-                if (inv != null) {
-                    inv.dropItems(b.getLocation(), slots(getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id"))));
-                }
-                try {
-                	MeNet net = getNetById(Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "main").replaceAll("[^0-9]", "")));
-                	
-                	scanall(net.getMain(),net.getId(),b.getLocation());
-                }catch(Exception er) {}
-                
-                BlockStorage.clearBlockInfo(b);
-            }
-        };
-    }
-    public BlockPlaceHandler onPlace() {
-    	return new BlockPlaceHandler(false) {
-
-			@Override
-			public void onPlayerPlace(BlockPlaceEvent e) {
-				
-				Block b = e.getBlock();
-				BlockStorage.addBlockInfo(b, "Drives", "");
-				BlockStorage.addBlockInfo(b, "MeType", "MeStore");
-				BlockStorage.addBlockInfo(b, "scanned", "false");
-				BlockStorage.addBlockInfo(b, "Status", "off");
-				findClose(b);
-				addHandlers(BlockStorage.getInventory(b),b);
-				
-			}
-    		
-    	};
     }
     public void defaultSlots(BlockMenu preset,int[] slot) {
     	
@@ -379,5 +353,35 @@ EnergyNetComponent,ScanNetwork {
     		return 1;
     	}
     }
+
+	@Override
+	String MeType() {
+
+		return "MeStore";
+	}
+
+	@Override
+	void placeHandler(BlockPlaceEvent e) {		
+		
+		Block b = e.getBlock();
+		BlockStorage.addBlockInfo(b, "Status", "off");
+		BlockStorage.addBlockInfo(b, "Drives", "");
+		
+		addHandlers(BlockStorage.getInventory(b),b);
+	}
+
+	@Override
+	void breakHandler(BlockBreakEvent e) {
+		// TODO Auto-generated method stub
+		Block b = e.getBlock();
+        BlockMenu inv = BlockStorage.getInventory(b);
+
+        if (inv != null) {
+            inv.dropItems(b.getLocation(), slots(getSlotTier(BlockStorage.getLocationInfo(b.getLocation(),"id"))));
+        }
+        
+        BlockStorage.clearBlockInfo(b);
+		
+	}
 	
 }

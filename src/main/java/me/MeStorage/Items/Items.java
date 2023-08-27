@@ -40,7 +40,36 @@ public class Items {
 	        "MEREMOTECONTROLER",
 	        "WIP(RemoteControler)"
 	    );
-	
+	public static final SlimefunItemStack MEIMPORTER1 = new SlimefunItemStack("MEIMPORTER1",
+			Material.LIGHT_BLUE_WOOL,
+	        "MEIMPORTER1",
+	        "WIP(importer)"
+	    );
+	public static final SlimefunItemStack MEIMPORTER2 = new SlimefunItemStack("MEIMPORTER2",
+			Material.LIGHT_BLUE_WOOL,
+	        "MEIMPORTER2",
+	        "WIP(importer)"
+	    );
+	public static final SlimefunItemStack MEIMPORTER3 = new SlimefunItemStack("MEIMPORTER3",
+			Material.LIGHT_BLUE_WOOL,
+	        "MEIMPORTER3",
+	        "WIP(importer)"
+	    );
+	public static final SlimefunItemStack MEEXPORTER1 = new SlimefunItemStack("MEEXPORTE1",
+			Material.RED_WOOL,
+	        "MEEXPORTER1",
+	        "WIP(exporter)"
+	    );
+	public static final SlimefunItemStack MEEXPORTER2 = new SlimefunItemStack("MEEXPORTE2",
+			Material.RED_WOOL,
+	        "MEEXPORTER2",
+	        "WIP(exporter)"
+	    );
+	public static final SlimefunItemStack MEEXPORTER3 = new SlimefunItemStack("MEEXPORTE3",
+			Material.RED_WOOL,
+	        "MEEXPORTER3",
+	        "WIP(exporter)"
+	    );
 	public static final SlimefunItemStack SERVER1 = new SlimefunItemStack("SERVER1",
 			Material.COAL_BLOCK,
 	        "SERVER1",

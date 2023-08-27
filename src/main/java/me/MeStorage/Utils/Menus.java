@@ -1,6 +1,6 @@
 package me.MeStorage.Utils;
 
-public enum menus {
+public enum Menus {
 	MAIN("Main"),
 	
 	DISKS("Disks"),
@@ -12,7 +12,7 @@ public enum menus {
 	SEARCH("Search");
 
 	public String type;
-	menus(String string) {
+	Menus(String string) {
 		type = string;
 	}
 }

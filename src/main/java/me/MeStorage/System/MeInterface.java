@@ -20,45 +20,10 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.md_5.bungee.api.ChatColor;
 
-public class MeInterface extends SlimefunItem implements ScanNetwork{
+public class MeInterface extends MeComponent implements ScanNetwork{
 	public MeInterface() {
 		super(Items.meStorage,Items.MEINTERFACE,RecipeType.ENHANCED_CRAFTING_TABLE,Items.recipe_TEST_ITEM);
-		addItemHandler(Place(),Break(),Click());
-	}
-	
-	public BlockPlaceHandler Place() {
-		return new BlockPlaceHandler(false) {
-
-			@Override
-			public void onPlayerPlace(BlockPlaceEvent e) {
-				Block b = e.getBlock();
-				BlockStorage.addBlockInfo(b, "MeType", "MeInterface");
-				BlockStorage.addBlockInfo(b, "scanned", "false");
-				findClose(b);
-				
-			}
-			
-		};
-	}
-	
-	public BlockBreakHandler Break() {
-		return new BlockBreakHandler(false,false) {
-
-			@Override
-			public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
-				Block b = e.getBlock();
-				try {
-                	MeNet net = getNetById(Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "main").replaceAll("[^0-9]", "")));
-                	
-                	scanall(net.getMain(),net.getId(),b.getLocation());
-                }catch(Exception er) {}
-                
-                BlockStorage.clearBlockInfo(b);
-				
-			}
-
-			
-		};
+		addItemHandler(Click());
 	}
 	
 	public BlockUseHandler Click() {
@@ -83,5 +48,23 @@ public class MeInterface extends SlimefunItem implements ScanNetwork{
 				
 			}
 		};
+	}
+
+	@Override
+	String MeType() {
+		// TODO Auto-generated method stub
+		return "MeInterface";
+	}
+
+	@Override
+	void placeHandler(BlockPlaceEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void breakHandler(BlockBreakEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

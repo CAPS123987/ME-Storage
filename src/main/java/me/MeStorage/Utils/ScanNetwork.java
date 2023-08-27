@@ -117,7 +117,7 @@ public interface ScanNetwork extends MeNetUtils{
 								disks.addAll(getDisks(newLoc));
 								servers.add(newLoc);
 								buffer.add(newLoc);
-							}else {
+							}else{
 								BlockStorage.addBlockInfo(newLoc,"scanned","true");
 								//BlockStorage.addBlockInfo(newLoc,"main",String.valueOf(main));
 								machines.add(newLoc);

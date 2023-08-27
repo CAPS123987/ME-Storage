@@ -28,6 +28,8 @@ import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.MeNet.MeNetManager;
 import me.MeStorage.System.DiskServer;
 import me.MeStorage.System.MeConnector;
+import me.MeStorage.System.MeExporter;
+import me.MeStorage.System.MeImporter;
 import me.MeStorage.System.MeInterface;
 import me.MeStorage.System.MeStorageControler;
 import me.MeStorage.temp.tempMachine;
@@ -71,6 +73,15 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new DiskServer(1,Items.SERVER1,Items.recipe_TEST_ITEM).register(this);
         new DiskServer(2,Items.SERVER2,Items.recipe_TEST_ITEM).register(this);
         new DiskServer(3,Items.SERVER3,Items.recipe_TEST_ITEM).register(this);
+        
+        new MeImporter(Items.MEIMPORTER1,Items.recipe_TEST_ITEM,9,3).register(this);
+        new MeImporter(Items.MEIMPORTER2,Items.recipe_TEST_ITEM,18,2).register(this);
+        new MeImporter(Items.MEIMPORTER3,Items.recipe_TEST_ITEM,27,1).register(this);
+        
+        new MeExporter(Items.MEEXPORTER1,Items.recipe_TEST_ITEM,9,3).register(this);
+        new MeExporter(Items.MEEXPORTER2,Items.recipe_TEST_ITEM,18,2).register(this);
+        new MeExporter(Items.MEEXPORTER3,Items.recipe_TEST_ITEM,27,1).register(this);
+        
         new MeStorageControler().register(this);
         new MeConnector().register(this);
         new tempMachine().register(this);

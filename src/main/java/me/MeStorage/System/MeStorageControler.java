@@ -38,7 +38,7 @@ import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.MeNetUtils;
 import me.MeStorage.Utils.ScanNetwork;
-import me.MeStorage.Utils.menus;
+import me.MeStorage.Utils.Menus;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
@@ -106,7 +106,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 
 			@Override
 			public void tick(Block b, SlimefunItem it, Config data) {
-				if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.MAIN.type)) {
+				if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.MAIN.type)) {
 					BlockMenu menu = BlockStorage.getInventory(b);
 					
 					boolean test = false;
@@ -152,7 +152,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				int empty = findEmpty();
 				newNet.setId(empty);
 				BlockStorage.addBlockInfo(e.getBlock().getLocation(), "net", String.valueOf(empty));
-				BlockStorage.addBlockInfo(e.getBlock().getLocation(), "menu", menus.MAIN.type);
+				BlockStorage.addBlockInfo(e.getBlock().getLocation(), "menu", Menus.MAIN.type);
 				BlockStorage.addBlockInfo(e.getBlock().getLocation(), "page", "1");
 				MeStorage.getNet().addNetwork(newNet);
 				scanall(e.getBlock().getLocation(),empty,nullLoc);
@@ -171,31 +171,31 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			menu.replaceExistingItem(errorSlot, new CustomItemStack(Material.BARRIER,ChatColor.DARK_RED+"Error occurred while loading server, please contact server admin"));
 			return;
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.DISKS.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.DISKS.type)) {
 			serverBorder(menu);
 			diskPage(menu,b);
 			
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.MAIN.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.MAIN.type)) {
 			mainBorer(menu);
 			mainPage(menu,b);
 			
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.SERVERS.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.SERVERS.type)) {
 			serverBorder(menu);
 			serverPage(menu,b);
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.SEARCH.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.SEARCH.type)) {
 			serverBorder(menu);
 			searchPage(menu,b);
 		}
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.EXPORT.type)) {
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.EXPORT.type)) {
 			if(exportItems.containsKey(b)) {
 				backButton(menu,b);
 				itemExport(menu,b);
 				
 			}else {
-				BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
+				BlockStorage.addBlockInfo(b, "menu", Menus.MAIN.type);
 				newInstance(menu,b);
 			}
 		}
@@ -374,7 +374,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	public void itemClick(BlockMenu menu,Block b,int[] slots) {
 		for(int slot:slots) {
 			menu.addMenuClickHandler(slot, (p,s,i,a)->{
-				BlockStorage.addBlockInfo(b, "menu", menus.EXPORT.type);
+				BlockStorage.addBlockInfo(b, "menu", Menus.EXPORT.type);
 				exportItems.put(b, MeItemUtils.removeAmount(i));
 				newInstance(menu,b);
 				return false;
@@ -525,7 +525,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	public void menuServerInspectButton(BlockMenu menu,Block b,int slot) {
 		menu.replaceExistingItem(slot,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Inspect current servers",ChatColor.GRAY+"Click to show registered servers"));
 		menu.addMenuClickHandler(slot, (p,s,i,a)->{
-			BlockStorage.addBlockInfo(b, "menu", menus.SERVERS.type);
+			BlockStorage.addBlockInfo(b, "menu", Menus.SERVERS.type);
 			newInstance(menu,b);
 			return false;
 		});
@@ -534,7 +534,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	public void menuDiskInspectButton(BlockMenu menu,Block b,int slot) {
 		menu.replaceExistingItem(slot,new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,ChatColor.YELLOW+"Inspect current Drives",ChatColor.GRAY+"Click to show registered servers"));
 		menu.addMenuClickHandler(slot, (p,s,i,a)->{
-			BlockStorage.addBlockInfo(b, "menu", menus.DISKS.type);
+			BlockStorage.addBlockInfo(b, "menu", Menus.DISKS.type);
 			newInstance(menu,b);
 			return false;
 		});
@@ -547,7 +547,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			p.sendMessage(ChatColor.DARK_RED+"Search for item by typing in chat");
 			ChatInput.waitForPlayer(MeStorage.instance, p, (message) -> {
 				BlockMenu menu2 = BlockStorage.getInventory(b);
-				BlockStorage.addBlockInfo(b, "menu", menus.SEARCH.type);
+				BlockStorage.addBlockInfo(b, "menu", Menus.SEARCH.type);
 				BlockStorage.addBlockInfo(b, "search", message);
 				BlockStorage.addBlockInfo(b, "page", "1");
 				newInstance(menu,b);
@@ -615,7 +615,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			if(exportItems.containsKey(b)) {
 				exportItems.remove(b);
 			}
-			BlockStorage.addBlockInfo(b, "menu", menus.MAIN.type);
+			BlockStorage.addBlockInfo(b, "menu", Menus.MAIN.type);
 			for(int i2:input) {
 				menu.replaceExistingItem(i2, new ItemStack(Material.AIR));
 			}
@@ -650,7 +650,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 	
 	public void clearMenu(BlockMenu menu,Block b) {
 		menu.addPlayerInventoryClickHandler((p,s,i,a)->true);
-		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(menus.MAIN.type)){
+		if(BlockStorage.getLocationInfo(b.getLocation(),"menu").equals(Menus.MAIN.type)){
 			for(int i = 0;i!=54;i++) {
 				if(!(i==16||i==25||i==34||i==43)) {
 					menu.replaceExistingItem(i, new ItemStack(Material.AIR));
