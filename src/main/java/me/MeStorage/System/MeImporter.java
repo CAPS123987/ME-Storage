@@ -57,9 +57,11 @@ public class MeImporter extends MeComponent implements ETInventoryBlock{
 			
 			@Override
 			public void uniqueTick() {
-				tick++;
-				if(tick>=speed+1) {
-					tick = 1;
+				if(speed!=0) {
+					tick++;
+					if(tick>=speed+1) {
+						tick = 1;
+					}
 				}
 		    }
 			
@@ -71,45 +73,49 @@ public class MeImporter extends MeComponent implements ETInventoryBlock{
 				
 				if(id!=null) {
 					if(tick==speed) {
-						for(int i:inputs) {
-							ItemStack item = menu.getItemInSlot(i);
-							//not air
-							if(item!=null) {
-								try {
-									int disk2 = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"disk"));
-									
-									MeNet netw= getNetById(Integer.parseInt(id));
-									
-									if(netw.getDisks().contains(disk2)) {
-										MeDisk disk = MeStorage.getDisk().getDisk(disk2);
-										if(!disk.isFull()) {
-											if(disk.pushItem(item)) {
-												item.setAmount(0);
-												return;
-											}
-										}
-									}
-								}catch(Exception e) {
-									MeNet netw= getNetById(Integer.parseInt(id));
-									
-									
-									for(int diskId:netw.getDisks()) {
-									
-										MeDisk disk = MeStorage.getDisk().getDisk(diskId);
-										if(!disk.isFull()) {
-											if(disk.pushItem(item)) {
-												item.setAmount(0);
-												return;
-											}
-										}
-									}
-								}
+						importItems(menu,id,b);
+					}
+					if(speed==0) {
+						importItems(menu,id,b);
+					}
+				}
+			}
+		};
+	}
+	public void importItems(BlockMenu menu,String id,Block b) {
+		
+		MeNet netw= getNetById(Integer.parseInt(id));
+		for(int i:inputs) {
+			ItemStack item = menu.getItemInSlot(i);
+			//not air
+			if(item!=null) {
+				try {
+					int disk2 = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"disk"));
+					
+					if(netw.getDisks().contains(disk2)) {
+						MeDisk disk = MeStorage.getDisk().getDisk(disk2);
+						if(!disk.isFull()) {
+							if(disk.pushItem(item)) {
+								item.setAmount(0);
+								if(speed!=0)return;
+							}
+						}
+					}
+				}catch(Exception e) {
+					
+					for(int diskId:netw.getDisks()) {
+					
+						MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+						if(!disk.isFull()) {
+							if(disk.pushItem(item)) {
+								item.setAmount(0);
+								if(speed!=0)return;
 							}
 						}
 					}
 				}
 			}
-		};
+		}
 	}
 	@SuppressWarnings("deprecation")
 	public void newInstance(BlockMenu menu,Block b) {

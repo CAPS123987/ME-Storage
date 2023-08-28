@@ -544,7 +544,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		menu.replaceExistingItem(slot, new CustomItemStack(Material.NAME_TAG,ChatColor.GRAY+"Search for item"));
 		menu.addMenuClickHandler(slot, (p,s,i2,a)->{
 			p.closeInventory();
-			p.sendMessage(ChatColor.DARK_RED+"Search for item by typing in chat");
+			p.sendMessage(ChatColor.YELLOW+"Search for item by typing in chat");
 			ChatInput.waitForPlayer(MeStorage.instance, p, (message) -> {
 				BlockMenu menu2 = BlockStorage.getInventory(b);
 				BlockStorage.addBlockInfo(b, "menu", Menus.SEARCH.type);

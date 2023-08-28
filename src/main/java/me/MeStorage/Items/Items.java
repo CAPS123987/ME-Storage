@@ -58,6 +58,12 @@ public class Items {
 	        "interval: 1 ticks",
 	        "WIP(importer)"
 	    );
+	public static final SlimefunItemStack MEIMPORTER4 = new SlimefunItemStack("MEIMPORTER4",
+			Material.LIGHT_GRAY_WOOL,
+	        "MEIMPORTER4",
+	        "no interval",
+	        "WIP(importer)"
+	    );
 	public static final SlimefunItemStack MEEXPORTER1 = new SlimefunItemStack("MEEXPORTE1",
 			Material.RED_WOOL,
 	        "MEEXPORTER1",

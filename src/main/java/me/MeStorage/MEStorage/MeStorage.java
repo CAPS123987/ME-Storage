@@ -77,6 +77,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new MeImporter(Items.MEIMPORTER1,Items.recipe_TEST_ITEM,9,3).register(this);
         new MeImporter(Items.MEIMPORTER2,Items.recipe_TEST_ITEM,18,2).register(this);
         new MeImporter(Items.MEIMPORTER3,Items.recipe_TEST_ITEM,27,1).register(this);
+        new MeImporter(Items.MEIMPORTER4,Items.recipe_TEST_ITEM,27,0).register(this);
         
         new MeExporter(Items.MEEXPORTER1,Items.recipe_TEST_ITEM,9,3).register(this);
         new MeExporter(Items.MEEXPORTER2,Items.recipe_TEST_ITEM,18,2).register(this);
