@@ -125,7 +125,7 @@ EnergyNetComponent,ScanNetwork {
         	
         	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
         	SlimefunItem sfItem = isSlimefun(i);
-        	if(sfItem!=null && (sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4))) {
+        	if(sfItem!=null && (sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)||sfItem.isItem(Items.DISK5))) {
         			
         		
         		
@@ -140,7 +140,7 @@ EnergyNetComponent,ScanNetwork {
         		return true;
         		
         	}
-        	if(sfItem2!=null && (sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4))) {
+        	if(sfItem2!=null && (sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)||sfItem2.isItem(Items.DISK5))) {
         			
         			ItemMeta meta = p.getItemOnCursor().getItemMeta();
         			List<String> lore = meta.getLore();
@@ -232,13 +232,13 @@ EnergyNetComponent,ScanNetwork {
             	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
 	        	SlimefunItem sfItem = isSlimefun(i);
 	        	if(sfItem!=null) {
-	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)) {
+	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)||sfItem.isItem(Items.DISK5)) {
 	        			//TODO setdiskId(i);
 	        			return true;
 	        		}
 	        	}
 	        	if(sfItem2!=null) {
-	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)) {
+	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)||sfItem2.isItem(Items.DISK5)) {
 	        			//TODO setdiskId(p.getItemOnCursor());
 	        			return true;
 	        		}
@@ -275,13 +275,13 @@ EnergyNetComponent,ScanNetwork {
             	SlimefunItem sfItem2 = isSlimefun(p.getItemOnCursor());
 	        	SlimefunItem sfItem = isSlimefun(i);
 	        	if(sfItem!=null) {
-	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)) {
+	        		if(sfItem.isItem(Items.DISK1)||sfItem.isItem(Items.DISK2)||sfItem.isItem(Items.DISK3)||sfItem.isItem(Items.DISK4)||sfItem.isItem(Items.DISK5)) {
 	        			//TODO setdiskId(i);
 	        			return true;
 	        		}
 	        	}
 	        	if(sfItem2!=null) {
-	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)) {
+	        		if(sfItem2.isItem(Items.DISK1)||sfItem2.isItem(Items.DISK2)||sfItem2.isItem(Items.DISK3)||sfItem2.isItem(Items.DISK4)||sfItem2.isItem(Items.DISK5)) {
 	        			//TODO setdiskId(p.getItemOnCursor());
 	        			return true;
 	        		}

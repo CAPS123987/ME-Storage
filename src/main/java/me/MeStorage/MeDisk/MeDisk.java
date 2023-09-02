@@ -72,7 +72,7 @@ public class MeDisk implements ConfigurationSerializable{
 		}
 		
 		currentCapacity = currentCapacity + item.getAmount();
-		MeStorage.saveDisks();
+		//MeStorage.saveDisks();
 		return true;
 	}
 	

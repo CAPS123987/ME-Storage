@@ -121,6 +121,12 @@ public class Items {
 	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk4,
 	        ChatColor.RED+"No ID"
 	    );
+	public static final SlimefunItemStack DISK5 = new SlimefunItemStack("DISK5",
+			Material.NETHERITE_HELMET,
+	        "DISK5",
+	        ChatColor.RESET+"Capacity: "+MeStorage.sizeDisk5,
+	        ChatColor.RED+"No ID"
+	    );
 	public static final ItemStack[] recipe_TEST_ITEM= {
 			null,null,null,
 			null,new ItemStack(Material.PINK_WOOL),null,

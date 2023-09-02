@@ -65,6 +65,8 @@ public class MeItemUtils {
 		}
 		if(item.isItem(Items.DISK4)) {
 			return MeStorage.sizeDisk4;
+		}if(item.isItem(Items.DISK5)) {
+			return MeStorage.sizeDisk5;
 		}
 		return 0;
 	}

@@ -32,6 +32,7 @@ public class MeInterface extends MeComponent implements ScanNetwork{
 			@Override
 			public void onRightClick(PlayerRightClickEvent e) {
 				Block b = e.getClickedBlock().get();
+				e.cancel();
 				try {
 					MeNet net = getNetById(Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "main").replaceAll("[^0-9]", "")));
 					

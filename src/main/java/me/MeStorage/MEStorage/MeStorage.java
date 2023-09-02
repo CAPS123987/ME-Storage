@@ -45,6 +45,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
 	public static int sizeDisk2;
 	public static int sizeDisk3;
 	public static int sizeDisk4;
+	public static int sizeDisk5;
 	
 	private static boolean error;
     @Override
@@ -57,6 +58,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         sizeDisk2 = cfg.getInt("Disk2Size");
         sizeDisk3 = cfg.getInt("Disk3Size");
         sizeDisk4 = cfg.getInt("Disk4Size");
+        sizeDisk5 = cfg.getInt("Disk5Size");
         
         if (cfg.getBoolean("options.auto-update")) {
             // You could start an Auto-Updater for example
@@ -69,6 +71,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(Items.meStorage, Items.DISK2, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
         new SlimefunItem(Items.meStorage, Items.DISK3, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
         new SlimefunItem(Items.meStorage, Items.DISK4, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
+        new SlimefunItem(Items.meStorage, Items.DISK5, RecipeType.ENHANCED_CRAFTING_TABLE , Items.recipe_TEST_ITEM).register(this);
 
         new DiskServer(1,Items.SERVER1,Items.recipe_TEST_ITEM).register(this);
         new DiskServer(2,Items.SERVER2,Items.recipe_TEST_ITEM).register(this);
