@@ -9,6 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,6 +29,7 @@ import me.MeStorage.MeDisk.MeDiskManager;
 import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.MeNet.MeNetManager;
 import me.MeStorage.System.DiskServer;
+import me.MeStorage.System.MeAutoCrafter;
 import me.MeStorage.System.MeConnector;
 import me.MeStorage.System.MeExporter;
 import me.MeStorage.System.MeImporter;
@@ -85,6 +88,8 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         new MeExporter(Items.MEEXPORTER1,Items.recipe_TEST_ITEM,9,3).register(this);
         new MeExporter(Items.MEEXPORTER2,Items.recipe_TEST_ITEM,18,2).register(this);
         new MeExporter(Items.MEEXPORTER3,Items.recipe_TEST_ITEM,27,1).register(this);
+        
+        new MeAutoCrafter(Items.MECRAFTER,Items.recipe_TEST_ITEM).register(this);
         
         new MeStorageControler().register(this);
         new MeConnector().register(this);
@@ -153,7 +158,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     	return meNetManager;
     }
     
-    public static MeDiskManager getDisk() {
+    public static MeDiskManager getDiskManager() {
     	return meDiskManager;
     }
 
@@ -184,7 +189,7 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
     }
     
     public static boolean saveDisks() {
-    	for(Map.Entry<Integer, MeDisk> entry:getDisk().getDisks().entrySet()) {
+    	for(Map.Entry<Integer, MeDisk> entry:getDiskManager().getDisks().entrySet()) {
     		int id = entry.getKey();
     		MeDisk disk = entry.getValue();
     		File file = new File(MeStorage.instance.getDataFolder(),id+".yml");
@@ -202,11 +207,13 @@ public class MeStorage extends JavaPlugin implements SlimefunAddon {
         // You can return a link to your Bug Tracker instead of null here
         return null;
     }
+    
     public static MeStorage getInstance() {
         return instance;
     }
     
     @Override
+    @Nonnull
     public JavaPlugin getJavaPlugin() {
         return this;
     }

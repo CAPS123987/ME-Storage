@@ -1,27 +1,5 @@
 package me.MeStorage.System;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -31,14 +9,10 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.MeStorage.Items.Items;
-import me.MeStorage.Utils.MeItemUtils;
 import me.MeStorage.MEStorage.MeStorage;
 import me.MeStorage.MeDisk.MeDisk;
 import me.MeStorage.MeNet.MeNet;
-import me.MeStorage.Utils.ETInventoryBlock;
-import me.MeStorage.Utils.MeNetUtils;
-import me.MeStorage.Utils.ScanNetwork;
-import me.MeStorage.Utils.Menus;
+import me.MeStorage.Utils.*;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
@@ -48,6 +22,20 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("deprecation")
 public class MeStorageControler extends SlimefunItem implements ETInventoryBlock,MeNetUtils,ScanNetwork{
@@ -119,17 +107,12 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 							String id =BlockStorage.getLocationInfo(b.getLocation(), "net");
 							MeNet net= getNetById(Integer.parseInt(id));
 							
-							for(int diskId:net.getDisks()) {
+							ItemStack calcItem = net.pushItem(item);
+							item.setAmount(calcItem.getAmount());
 							
-								MeDisk disk = MeStorage.getDisk().getDisk(diskId);
-								if(!disk.isFull()) {
-									if(disk.pushItem(item)) {
-										test=true;
-										item.setAmount(0);
-										break;
-									}
-								}
-								
+							if(calcItem.getAmount()==0) {
+								test=true;
+								item.setAmount(0);
 							}
 						}
 					}
@@ -228,7 +211,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 			items.add(new ItemStack(Material.AIR));
 
 			for(int diskId:net.getDisks()) {
-					MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+					MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
 					ItemStack item = item2.clone();
 					//export
 					int able =disk.tryExportItem(item);
@@ -338,7 +321,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 				if(!disk.isEmpty()) {
 					String name = BlockStorage.getLocationInfo(l, "name");
 					SlimefunItemStack item = null;
-					MeDisk meDisk = MeStorage.getDisk().getDisk(Integer.parseInt(disk));
+					MeDisk meDisk = MeStorage.getDiskManager().getDisk(Integer.parseInt(disk));
 					if(name == null) {
 						item =new SlimefunItemStack("DISK",
 								MeItemUtils.DISK_HEAD,
@@ -591,7 +574,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		items.add(new ItemStack(Material.AIR));
 
 		for(int diskId:net.getDisks()) {
-			MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+			MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
 			
 			Map<ItemStack,Integer> diskItems = disk.getItems();
 			
@@ -675,7 +658,7 @@ public class MeStorageControler extends SlimefunItem implements ETInventoryBlock
 		double count =0;
 		for(int diskId:net.getDisks()) {
 					
-			MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+			MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
 			Map<ItemStack,Integer> diskItems = disk.getItems();
 				
 			//for items in server

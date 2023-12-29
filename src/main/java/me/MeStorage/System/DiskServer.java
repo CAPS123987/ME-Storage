@@ -2,9 +2,8 @@ package me.MeStorage.System;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import javax.annotation.Nonnull;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,14 +18,11 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.MeStorage.Items.Items;
 import me.MeStorage.MEStorage.MeStorage;
-import me.MeStorage.MeNet.MeNet;
 import me.MeStorage.Utils.ETInventoryBlock;
 import me.MeStorage.Utils.MeItemUtils;
 import me.MeStorage.Utils.ScanNetwork;
@@ -35,7 +31,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-
 
 @SuppressWarnings("deprecation")
 public class DiskServer extends MeComponent implements ETInventoryBlock,
@@ -119,6 +114,7 @@ EnergyNetComponent,ScanNetwork {
 		
 	}
 	
+	
 	public void addHandlers(BlockMenu menu,Block b) {
 		int[] slot = slots(getSlotTier(BlockStorage.getLocationInfo(b.getLocation(), "id")));
 		menu.addPlayerInventoryClickHandler((p, s, i, a) -> {
@@ -132,7 +128,7 @@ EnergyNetComponent,ScanNetwork {
        			ItemMeta meta = i.getItemMeta();
        			List<String> lore = meta.getLore();
        			if(lore.get(1).contains("ID")) {
-       				int id = MeStorage.getDisk().createDisc(sfItem);
+       				int id = MeStorage.getDiskManager().createDisc(sfItem);
 	       			lore.set(1, String.valueOf(id));
 	       			meta.setLore(lore);
 	        		i.setItemMeta(meta);
@@ -145,7 +141,7 @@ EnergyNetComponent,ScanNetwork {
         			ItemMeta meta = p.getItemOnCursor().getItemMeta();
         			List<String> lore = meta.getLore();
         			if(lore.get(1).contains("ID")) {
-        				int id = MeStorage.getDisk().createDisc(sfItem2);
+        				int id = MeStorage.getDiskManager().createDisc(sfItem2);
 	        			lore.set(1, String.valueOf(id));
 	        			meta.setLore(lore);
 	        			p.getItemOnCursor().setItemMeta(meta);
@@ -195,6 +191,7 @@ EnergyNetComponent,ScanNetwork {
 
 
 	@Override
+	@Nonnull
 	public EnergyNetComponentType getEnergyComponentType() {
 		return EnergyNetComponentType.CONSUMER;
 	}

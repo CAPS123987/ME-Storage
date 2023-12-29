@@ -74,13 +74,14 @@ public class MeExporter extends MeComponent implements ETInventoryBlock{
 			@SuppressWarnings("deprecation")
 			@Override
 			public void tick(Block b, SlimefunItem it, Config data) {
+				
+				if(tick!=speed) return;
+				
 				BlockMenu menu = BlockStorage.getInventory(b);
 				
 				String id = BlockStorage.getLocationInfo(b.getLocation(), "main");
 				
 				if(id==null) return;
-				
-				if(tick!=speed) return;
 				
 				if(menu.getItemInSlot(exportItem)==null) return;
 				
@@ -89,8 +90,6 @@ public class MeExporter extends MeComponent implements ETInventoryBlock{
 				item.setAmount(Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(), "amount")));
 				
 				if(!menu.fits(item, outputs)) return;
-				
-				
 				
 				MeNet net= getNetById(Integer.parseInt(id));
 				
@@ -107,7 +106,7 @@ public class MeExporter extends MeComponent implements ETInventoryBlock{
 	
 	private void exportNormal(MeNet net,ItemStack item,BlockMenu menu) {
 		for(int diskId:net.getDisks()) {
-			MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+			MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
 			
 			//export
 			int able =disk.tryExportItem(item);
@@ -124,7 +123,7 @@ public class MeExporter extends MeComponent implements ETInventoryBlock{
 	private void exportByNumber(MeNet net,ItemStack item,BlockMenu menu,int number) {
 		if(!net.getDisks().contains(number)) return;
 		
-		MeDisk disk = MeStorage.getDisk().getDisk(number);
+		MeDisk disk = MeStorage.getDiskManager().getDisk(number);
 		
 		//export
 		int able =disk.tryExportItem(item);

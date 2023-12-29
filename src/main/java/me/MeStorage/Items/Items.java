@@ -82,6 +82,10 @@ public class Items {
 	        "interval: 1 ticks",
 	        "WIP(exporter)"
 	    );
+	public static final SlimefunItemStack MECRAFTER = new SlimefunItemStack("MECRAFTER",
+			Material.CYAN_WOOL,
+	        "MECRAFTER"
+	    );
 	public static final SlimefunItemStack SERVER1 = new SlimefunItemStack("SERVER1",
 			Material.COAL_BLOCK,
 	        "SERVER1",

@@ -92,31 +92,36 @@ public class MeImporter extends MeComponent implements ETInventoryBlock{
 				try {
 					int disk2 = Integer.parseInt(BlockStorage.getLocationInfo(b.getLocation(),"disk"));
 					
-					if(netw.getDisks().contains(disk2)) {
-						MeDisk disk = MeStorage.getDisk().getDisk(disk2);
+					
+					item.setAmount(netw.pushItem(item, disk2).getAmount());
+					/*if(netw.getDisks().contains(disk2)) {
+						MeDisk disk = MeStorage.getDiskManager().getDisk(disk2);
 						if(!disk.isFull()) {
 							if(disk.pushItem(item)) {
 								item.setAmount(0);
 								if(speed!=0)return;
 							}
 						}
-					}
+					}*/
 				}catch(Exception e) {
 					
-					for(int diskId:netw.getDisks()) {
 					
-						MeDisk disk = MeStorage.getDisk().getDisk(diskId);
+					item.setAmount(netw.pushItem(item).getAmount());
+					/*for(int diskId:netw.getDisks()) {
+					
+						MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
 						if(!disk.isFull()) {
 							if(disk.pushItem(item)) {
 								item.setAmount(0);
 								if(speed!=0)return;
 							}
 						}
-					}
+					}*/
 				}
 			}
 		}
 	}
+
 	@SuppressWarnings("deprecation")
 	public void newInstance(BlockMenu menu,Block b) {
 		menu.replaceExistingItem(settings, new SlimefunItemStack("SETTINGS_ICON_IMPORTER",

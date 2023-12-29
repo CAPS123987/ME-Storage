@@ -32,7 +32,6 @@ public class MeDisk implements ConfigurationSerializable{
 		return currentCapacity;
 	}
 	
-	
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
@@ -71,9 +70,13 @@ public class MeDisk implements ConfigurationSerializable{
 			items.put(temp, item.getAmount());
 		}
 		
-		currentCapacity = currentCapacity + item.getAmount();
+		currentCapacity += item.getAmount();
 		//MeStorage.saveDisks();
 		return true;
+	}
+	
+	public boolean canExport(ItemStack origoItem) {
+		return tryExportItem(origoItem)>=origoItem.getAmount();
 	}
 	
 	public int tryExportItem(ItemStack origoItem) {

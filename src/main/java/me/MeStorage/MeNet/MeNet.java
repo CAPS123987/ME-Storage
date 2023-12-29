@@ -8,14 +8,18 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.inventory.ItemStack;
+
+import me.MeStorage.MEStorage.MeStorage;
+import me.MeStorage.MeDisk.MeDisk;
 
 public class MeNet implements ConfigurationSerializable{
-	protected Location main;
-	protected List<Location> connectors = new ArrayList<Location>();
-	protected List<Location> machines = new ArrayList<Location>();
-	protected List<Location> servers = new ArrayList<Location>();
-	protected int id;
-	protected List<Integer> disks = new ArrayList<Integer>();
+	private Location main;
+	private List<Location> connectors = new ArrayList<Location>();
+	private List<Location> machines = new ArrayList<Location>();
+	private List<Location> servers = new ArrayList<Location>();
+	private int id;
+	private List<Integer> disks = new ArrayList<Integer>();
 	
 	
 	public MeNet() {
@@ -99,7 +103,66 @@ public class MeNet implements ConfigurationSerializable{
 		Validate.notNull(l,"Location can't be null");
 		servers.add(l);
 	}
-	
+	public ItemStack pushItem(ItemStack origoItem) {
+		Validate.notNull(origoItem,"Item can't be null");
+		
+		ItemStack item = origoItem.clone();
+		
+		for(int diskId:disks) {
+			ItemStack calcItem = pushItem(item, diskId);
+			if(calcItem.getAmount()==0) {
+				item.setAmount(0);
+				return item;
+			}
+		}
+		return origoItem;
+		
+	}
+	public ItemStack pushItem(ItemStack origoItem, int diskId) {
+		Validate.notNull(origoItem,"Item can't be null");
+		
+		if(!disks.contains(diskId)) return origoItem;
+		MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
+		
+		ItemStack item = origoItem.clone();
+		
+		if(!disk.isFull()) {
+			if(disk.pushItem(item)) {
+				item.setAmount(0);
+				return item;
+			}
+		}
+		return origoItem;
+	}
+	public ItemStack removeItem(ItemStack item, int diskId) {
+		Validate.notNull(item,"Item can't be null");
+		
+		if(!disks.contains(diskId)) return item;
+		MeDisk disk = MeStorage.getDiskManager().getDisk(diskId);
+		
+		int able =disk.tryExportItem(item);
+		if(able!=0) {
+			ItemStack returnItem = item.clone();
+			returnItem.setAmount(item.getAmount()-able);
+			disk.exportItem(item);
+			return returnItem;
+		}
+		
+		return item;
+	}
+	public ItemStack removeItem(ItemStack origoItem) {
+		ItemStack item = origoItem.clone();
+		
+		for(int diskId:disks) {
+			ItemStack calcItem = removeItem(item, diskId);
+			if(calcItem==null) {
+				return null;
+			}
+			item.setAmount(calcItem.getAmount());
+			
+		}
+		return item;
+	}
 	
 	
 	
